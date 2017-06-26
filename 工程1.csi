@@ -1,0 +1,6 @@
+[历史]
+1=#P0#=mb	#P1#=WebBrowser1_DocumentComplete	#P2#=工程1/Form1/WebBrowser1_DocumentComplete	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170626095214	#P7#=0	#P8#=19	.
+2=#P0#=mb	#P1#=WebBrowser1_DownloadComplete	#P2#=工程1/Form1/WebBrowser1_DownloadComplete	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170626094525	#P7#=-2147483640	#P8#=-2	.
+3=#P0#=mb	#P1#=Form_Load	#P2#=工程1/Form1/Form_Load	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170626093500	#P7#=0	#P8#=1	.
+4=#P0#=mb	#P1#=Command1_Click	#P2#=工程1/Form1/Command1_Click	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170626094140	#P7#=-2147483640	#P8#=6	.
+5=#P0#=mb	#P1#=Timer1_Timer	#P2#=工程1/Form1/Timer1_Timer	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170616160443	#P7#=0	#P8#=3	.
