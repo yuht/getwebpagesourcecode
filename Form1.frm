@@ -3,26 +3,37 @@ Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
 Begin VB.Form Form1 
    BackColor       =   &H80000005&
    Caption         =   "获取网页源文件"
-   ClientHeight    =   4245
+   ClientHeight    =   3000
    ClientLeft      =   60
    ClientTop       =   450
-   ClientWidth     =   12030
+   ClientWidth     =   10980
    FillColor       =   &H80000005&
    Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   4245
-   ScaleWidth      =   12030
+   ScaleHeight     =   3000
+   ScaleWidth      =   10980
    StartUpPosition =   1  '所有者中心
+   Begin VB.TextBox txtHttpWww 
+      Appearance      =   0  'Flat
+      ForeColor       =   &H80000007&
+      Height          =   300
+      Left            =   1350
+      TabIndex        =   0
+      Text            =   "http://www.vodtw.com/html/book/28/28902/"
+      Top             =   90
+      Width           =   6225
+   End
    Begin VB.CheckBox chk 
       Appearance      =   0  'Flat
       BackColor       =   &H80000005&
-      Caption         =   "一直自动获取"
+      Caption         =   "自动下载下一章"
       ForeColor       =   &H80000008&
-      Height          =   330
-      Left            =   10215
-      TabIndex        =   6
-      Top             =   270
-      Width           =   1725
+      Height          =   285
+      Left            =   8910
+      TabIndex        =   4
+      Top             =   450
+      Value           =   1  'Checked
+      Width           =   1950
    End
    Begin VB.Timer Timer1 
       Enabled         =   0   'False
@@ -37,18 +48,18 @@ Begin VB.Form Form1
       Left            =   45
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Both
-      TabIndex        =   5
+      TabIndex        =   7
       Top             =   4635
       Width           =   12735
    End
    Begin SHDocVwCtl.WebBrowser WebBrowser1 
-      Height          =   900
-      Left            =   90
-      TabIndex        =   4
-      Top             =   675
-      Width           =   11865
-      ExtentX         =   20929
-      ExtentY         =   1587
+      Height          =   675
+      Left            =   45
+      TabIndex        =   6
+      Top             =   810
+      Width           =   10875
+      ExtentX         =   19182
+      ExtentY         =   1191
       ViewMode        =   0
       Offline         =   0
       Silent          =   0
@@ -64,48 +75,56 @@ Begin VB.Form Form1
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   "http:///"
+      Location        =   ""
    End
    Begin VB.CommandButton Command1 
-      BackColor       =   &H00FFC0C0&
+      Appearance      =   0  'Flat
       Caption         =   "获取"
       Default         =   -1  'True
       Height          =   375
-      Left            =   9180
-      Style           =   1  'Graphical
-      TabIndex        =   2
-      Top             =   225
+      Left            =   7875
+      TabIndex        =   3
+      Top             =   405
       Width           =   855
    End
    Begin VB.TextBox Text2 
       ForeColor       =   &H80000007&
-      Height          =   2505
+      Height          =   1425
       Left            =   45
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Both
       TabIndex        =   1
-      Top             =   1665
-      Width           =   11925
+      Top             =   1530
+      Width           =   10890
    End
    Begin VB.TextBox Text1 
       Appearance      =   0  'Flat
       ForeColor       =   &H80000007&
-      Height          =   315
-      Left            =   945
-      ScrollBars      =   3  'Both
-      TabIndex        =   0
+      Height          =   300
+      Left            =   1350
+      TabIndex        =   2
       Text            =   "http://www.vodtw.com/html/book/28/28902/21716386.html"
-      Top             =   225
-      Width           =   8070
+      Top             =   450
+      Width           =   6225
+   End
+   Begin VB.Label lbl 
+      AutoSize        =   -1  'True
+      BackStyle       =   0  'Transparent
+      Caption         =   "书记目录网址："
+      Height          =   180
+      Left            =   45
+      TabIndex        =   8
+      Top             =   135
+      Width           =   1260
    End
    Begin VB.Label Label1 
       BackStyle       =   0  'Transparent
-      Caption         =   "输入网址："
+      Caption         =   "当前阅读网址："
       Height          =   255
-      Left            =   90
-      TabIndex        =   3
-      Top             =   270
-      Width           =   975
+      Left            =   45
+      TabIndex        =   5
+      Top             =   495
+      Width           =   1650
    End
 End
 Attribute VB_Name = "Form1"
@@ -149,7 +168,7 @@ Private Sub WebBrowser1_DocumentComplete(ByVal pDisp As Object, URL As Variant)
     On Error Resume Next
   
     Dim Cont, Rcont, NextPage
-    Dim Pos, posL, posR, posP, posDiv
+    Dim Pos, posL, posR
     Dim DocTitle
     
     If URL = vbNullString Then
@@ -205,12 +224,12 @@ Private Sub WebBrowser1_DocumentComplete(ByVal pDisp As Object, URL As Variant)
   
 '    Text2 = cont
    
-    posP = InStr(1, (Cont), "<p>")
-    posDiv = InStr(posP, (Cont), "</div>")
+    posL = InStr(1, (Cont), "<p>")
+    posR = InStr(posL, (Cont), "</div>")
 
-    Rcont = Rcont & Mid$(Cont, posP, posDiv - posP)
+    Rcont = Rcont & Mid$(Cont, posL, posR - posL)
     
-    Cont = Mid$(Cont, posDiv)
+    Cont = Mid$(Cont, posR)
     
     
     Rcont = Replace$(Rcont, " ", "")
@@ -261,7 +280,12 @@ Private Sub WebBrowser1_DocumentComplete(ByVal pDisp As Object, URL As Variant)
     posL = InStrRev(Cont, """", posR - 1) + 1
     NextPage = Mid$(Cont, posL, posR - posL)
     
-    Text1.Text = "http://www.vodtw.com/html/book/28/28902/" & NextPage
+    
+    If Right$(txtHttpWww, 1) <> "/" Then
+        txtHttpWww = txtHttpWww & "/"
+    End If
+    
+    Text1.Text = txtHttpWww & NextPage
 
     If chk.Value = vbChecked Then
         Timer1.Enabled = True
