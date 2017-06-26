@@ -38,3 +38,6 @@ DebugStartupOption=0
 
 [MS Transaction Server]
 AutoRefresh=1
+
+[CodeSMART]
+Task_UID=26_06_17_16_37_49

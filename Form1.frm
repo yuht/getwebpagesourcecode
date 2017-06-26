@@ -13,6 +13,14 @@ Begin VB.Form Form1
    ScaleHeight     =   3000
    ScaleWidth      =   10980
    StartUpPosition =   1  '所有者中心
+   Begin VB.CommandButton cmdCommand2 
+      Caption         =   "Command2"
+      Height          =   360
+      Left            =   7965
+      TabIndex        =   9
+      Top             =   90
+      Width           =   990
+   End
    Begin VB.TextBox txtHttpWww 
       Appearance      =   0  'Flat
       ForeColor       =   &H80000007&
@@ -136,6 +144,30 @@ Attribute VB_Exposed = False
 
 Option Explicit
 Dim filename
+
+
+Private Sub cmdCommand2_Click()
+    Text2 = GetHtmlStr(Text1)
+End Sub
+
+Private Function GetHtmlStr(strUrl As String) As String
+    Dim xml As Object
+    Set xml = CreateObject("msxml2.serverxmlhttp")
+    xml.Open "GET", strUrl, False
+    xml.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+    xml.setRequestHeader "Accept-Language", "zh-cn"
+'    xml.setRequestHeader "Accept-Encoding", "gzip, deflate"
+    xml.setRequestHeader "User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; SV1; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.04506.648; .NET CLR 3.5.21022; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)"
+    xml.send
+    Do While xml.ReadyState <> 4
+        DoEvents
+    Loop
+    GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
+    Set xml = Nothing
+End Function
+
+
+ 
 
 Private Sub Command1_Click()
     
