@@ -204,10 +204,6 @@ Private Function GetHtmlStr(strUrl As String) As String
 
     Do While xml.ReadyState <> 4
         DoEvents
-        DoEvents
-        DoEvents
-        DoEvents
-        DoEvents
     Loop
 
     GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
@@ -446,17 +442,26 @@ Private Sub cmdgetmenu_Click()
         
         DoEvents
     Next
-    'Call fileWrite(App.Path & "/debug.log", s)
+    'Call fileWrite(App.Path & "/debuglist.log", s)
     
-
+    'Exit Sub
     
     For i = j To UBound(UT)
         DoEvents
-        Call SaveContent(UT(i), i + 1)
+        If i < 1763 Then
+            UT(i).Title = "第" & i + 1 & "章 " & UT(i).Title
+        ElseIf i = 1763 Then
+            UT(i).Title = "关于更新想说的话"
+        Else
+            UT(i).Title = "第" & i & "章 " & UT(i).Title
+        End If
+        
+        Call SaveContent(UT(i))
+        
     Next
 End Sub
 
-Private Function SaveContent(UT As UrlandTitle, i As Integer)
+Private Function SaveContent(UT As UrlandTitle)
     Dim strCont     As String
     Dim tmpstrCont  As String
     Dim tmpstrTitle As String
@@ -470,7 +475,8 @@ Private Function SaveContent(UT As UrlandTitle, i As Integer)
      'Call fileWrite(App.Path & "/debugcont.log", UT.Url & vbCrLf & UT.Title & strHTML)
     
     '====================================获取章节标题
-    tmpstrTitle = "第" & i & "章 " & UT.Title
+        
+    tmpstrTitle = UT.Title
     
     '将章节标题作为文件名
     If filename = "" Then
