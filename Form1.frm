@@ -2,22 +2,39 @@ VERSION 5.00
 Begin VB.Form Form1 
    BackColor       =   &H80000005&
    Caption         =   "www.vodtw.com在线小说下载器"
-   ClientHeight    =   2400
+   ClientHeight    =   4425
    ClientLeft      =   60
    ClientTop       =   450
    ClientWidth     =   11115
    FillColor       =   &H80000005&
    Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   2400
+   ScaleHeight     =   4425
    ScaleWidth      =   11115
    StartUpPosition =   1  '所有者中心
+   Begin VB.TextBox txtText3 
+      Appearance      =   0  'Flat
+      Height          =   285
+      Left            =   8100
+      TabIndex        =   9
+      Text            =   "830"
+      Top             =   90
+      Width           =   825
+   End
+   Begin VB.CommandButton cmdgetmenu 
+      Caption         =   "下载"
+      Height          =   300
+      Left            =   9675
+      TabIndex        =   7
+      Top             =   90
+      Width           =   990
+   End
    Begin VB.CommandButton cmdCommand2 
       Caption         =   "下载"
-      Height          =   360
+      Height          =   315
       Left            =   7785
       TabIndex        =   6
-      Top             =   405
+      Top             =   630
       Width           =   990
    End
    Begin VB.TextBox txtHttpWww 
@@ -38,7 +55,7 @@ Begin VB.Form Form1
       Height          =   285
       Left            =   8910
       TabIndex        =   3
-      Top             =   450
+      Top             =   630
       Value           =   1  'Checked
       Width           =   1950
    End
@@ -52,12 +69,12 @@ Begin VB.Form Form1
       Appearance      =   0  'Flat
       CausesValidation=   0   'False
       ForeColor       =   &H80000007&
-      Height          =   1560
+      Height          =   2415
       Left            =   45
       MultiLine       =   -1  'True
       ScrollBars      =   2  'Vertical
       TabIndex        =   1
-      Top             =   765
+      Top             =   1125
       Width           =   10890
    End
    Begin VB.TextBox Text1 
@@ -67,14 +84,26 @@ Begin VB.Form Form1
       Left            =   1350
       TabIndex        =   2
       Text            =   "http://www.vodtw.com/html/book/28/28902/21716386.html"
-      Top             =   450
+      Top             =   630
       Width           =   6225
+   End
+   Begin VB.Label lbl 
+      AutoSize        =   -1  'True
+      BackStyle       =   0  'Transparent
+      Caption         =   "从第          章开始"
+      Height          =   180
+      Index           =   1
+      Left            =   7695
+      TabIndex        =   8
+      Top             =   135
+      Width           =   1800
    End
    Begin VB.Label lbl 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
       Caption         =   "书记目录网址："
       Height          =   180
+      Index           =   0
       Left            =   45
       TabIndex        =   5
       Top             =   135
@@ -86,7 +115,7 @@ Begin VB.Form Form1
       Height          =   255
       Left            =   45
       TabIndex        =   4
-      Top             =   495
+      Top             =   675
       Width           =   1650
    End
 End
@@ -98,6 +127,11 @@ Attribute VB_Exposed = False
 
 Option Explicit
 Dim filename
+
+Private Type UrlandTitle
+    Url As String
+    Title As String
+End Type
 
 Private Sub cmdCommand2_Click()
     Dim strCont     As String
@@ -111,7 +145,6 @@ Private Sub cmdCommand2_Click()
     '====================================获取章节标题
     tmpstrTitle = GetTitle(strHTML)
     
-    '    Text3 = tmpstrCont
     If Len(tmpstrTitle) = 0 Then
         Exit Sub
     End If
@@ -171,10 +204,14 @@ Private Function GetHtmlStr(strUrl As String) As String
 
     Do While xml.ReadyState <> 4
         DoEvents
+        DoEvents
+        DoEvents
+        DoEvents
+        DoEvents
     Loop
 
-    'GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
-    GetHtmlStr = xml.responsetext
+    GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
+    'GetHtmlStr = xml.responsetext
     Set xml = Nothing
 End Function
 
@@ -321,8 +358,151 @@ Function fileWrite(strFilename As String, strContent As String)
     Close #i
 End Function
 
+Private Sub cmdgetmenu_Click()
+
+    
+    
+    Dim strMenulist
+    Dim posL, posR
+    
+        
+    '==================================== 对书籍首页网址进行格式化
+    If Right$(txtHttpWww, 1) <> "/" Then
+        txtHttpWww = txtHttpWww & "/"
+    End If
+    
+    
+    
+    strMenulist = GetHtmlStr(txtHttpWww)
+    strMenulist = LCase$(strMenulist)
+    
+    strMenulist = Replace$(strMenulist, "  ", "")
+    strMenulist = Replace$(strMenulist, vbTab, "")
+    
+    'Call fileWrite(App.Path & "/debug.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
+    
+    posL = InStr(1, strMenulist, "<dd>")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
+    strMenulist = Mid$(strMenulist, posL)
+    'Call fileWrite(App.Path & "/debug.log", "截取dd后的信息:" & vbCrLf & strMenulist)
+    
+    posL = InStr(1, strMenulist, "<ul>")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
+    strMenulist = Mid$(strMenulist, posL)
+    'Call fileWrite(App.Path & "/debug.log", "截取<ul>后的信息:" & vbCrLf & strMenulist)
+    
+    
+    posR = InStr(1, strMenulist, "</ul>")
+    If posR = 0 Then
+        Exit Sub
+    End If
+    
+    strMenulist = Left(strMenulist, posR - 1)
+    'Call fileWrite(App.Path & "/debug.log", "截取<ul></ul>之间的信息:" & vbCrLf & strMenulist)
+    
+    strMenulist = Replace$(strMenulist, "<ul>", "")
+    strMenulist = Replace$(strMenulist, "</ul>", "")
+    strMenulist = Replace$(strMenulist, "<li>", "")
+    strMenulist = Replace$(strMenulist, "</li>", "")
+    strMenulist = Replace$(strMenulist, vbCr, "")
+    strMenulist = Replace$(strMenulist, vbLf, "")
+    
+    'Call fileWrite(App.Path & "/debug.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
+    
+    Dim k
+    Dim i, j
+    Dim s As String
+    k = Split(strMenulist, "</a>")
+    i = UBound(k) - 1
+    ReDim UT(i) As UrlandTitle
+    
+    j = Val(txtText3) - 1
+    If j < 0 Then j = 0
+    
+    txtText3 = j + 1
+    
+    For i = j To UBound(k) - 1
+        k(i) = Trim$(k(i))
+        posL = InStr(1, k(i), """") + 1
+        If posL <> 0 Then
+            posR = InStr(posL, k(i), """") - 1
+             If posR <> 0 Then
+                UT(i).Url = txtHttpWww & Mid$(k(i), posL, posR - posL + 1)
+            End If
+        End If
+        If Len(UT(i).Url) Then
+            posL = InStrRev(k(i), " ") + 1
+            If posL <> 0 Then
+                UT(i).Title = Mid$(k(i), posL)
+                's = s & i + 1 & "-" & UT(i).Url & "-" & UT(i).Title & vbCrLf
+            End If
+        End If
+        
+        DoEvents
+    Next
+    'Call fileWrite(App.Path & "/debug.log", s)
+    
+
+    
+    For i = j To UBound(UT)
+        DoEvents
+        Call SaveContent(UT(i), i + 1)
+    Next
+End Sub
+
+Private Function SaveContent(UT As UrlandTitle, i As Integer)
+    Dim strCont     As String
+    Dim tmpstrCont  As String
+    Dim tmpstrTitle As String
+    Dim strHTML     As String
+
+    
+    '=====================================获取html内容
+    strHTML = GetHtmlStr(UT.Url)
+    strHTML = LCase$(strHTML)
+    
+     'Call fileWrite(App.Path & "/debugcont.log", UT.Url & vbCrLf & UT.Title & strHTML)
+    
+    '====================================获取章节标题
+    tmpstrTitle = "第" & i & "章 " & UT.Title
+    
+    '将章节标题作为文件名
+    If filename = "" Then
+        filename = tmpstrTitle
+    End If
+    
+    '====================================获取章节内容
+    tmpstrCont = GetContent(strHTML)
+
+    
+    If Len(tmpstrCont) = 0 Then
+        Exit Function
+    End If
+    
+    tmpstrCont = ContentUnescape(tmpstrCont)
+    tmpstrCont = ContentFilter(tmpstrCont)
+    
+    strCont = tmpstrTitle & vbCrLf & tmpstrCont & vbCrLf & vbCrLf
+
+    Call fileWrite(App.Path & "\" & filename & ".txt", strCont)
+ 
+    Text2 = UT.Url & vbTab & tmpstrTitle & vbCrLf & Text2
+    
+End Function
+
+
 Private Sub Form_Load()
     filename = ""
+End Sub
+
+Private Sub Form_Unload(Cancel As Integer)
+    End
 End Sub
 
 Private Sub Timer1_Timer()
