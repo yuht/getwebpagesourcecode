@@ -1,24 +1,23 @@
 VERSION 5.00
-Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
 Begin VB.Form Form1 
    BackColor       =   &H80000005&
-   Caption         =   "获取网页源文件"
-   ClientHeight    =   3000
+   Caption         =   "www.vodtw.com在线小说下载器"
+   ClientHeight    =   2400
    ClientLeft      =   60
    ClientTop       =   450
-   ClientWidth     =   10980
+   ClientWidth     =   11115
    FillColor       =   &H80000005&
    Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   3000
-   ScaleWidth      =   10980
+   ScaleHeight     =   2400
+   ScaleWidth      =   11115
    StartUpPosition =   1  '所有者中心
    Begin VB.CommandButton cmdCommand2 
-      Caption         =   "Command2"
+      Caption         =   "下载"
       Height          =   360
-      Left            =   7965
-      TabIndex        =   9
-      Top             =   90
+      Left            =   7785
+      TabIndex        =   6
+      Top             =   405
       Width           =   990
    End
    Begin VB.TextBox txtHttpWww 
@@ -38,7 +37,7 @@ Begin VB.Form Form1
       ForeColor       =   &H80000008&
       Height          =   285
       Left            =   8910
-      TabIndex        =   4
+      TabIndex        =   3
       Top             =   450
       Value           =   1  'Checked
       Width           =   1950
@@ -49,60 +48,16 @@ Begin VB.Form Form1
       Left            =   2385
       Top             =   1260
    End
-   Begin VB.TextBox Text3 
-      BackColor       =   &H8000000F&
-      ForeColor       =   &H80000005&
-      Height          =   2505
-      Left            =   45
-      MultiLine       =   -1  'True
-      ScrollBars      =   3  'Both
-      TabIndex        =   7
-      Top             =   4635
-      Width           =   12735
-   End
-   Begin SHDocVwCtl.WebBrowser WebBrowser1 
-      Height          =   675
-      Left            =   45
-      TabIndex        =   6
-      Top             =   810
-      Width           =   10875
-      ExtentX         =   19182
-      ExtentY         =   1191
-      ViewMode        =   0
-      Offline         =   0
-      Silent          =   0
-      RegisterAsBrowser=   0
-      RegisterAsDropTarget=   1
-      AutoArrange     =   0   'False
-      NoClientEdge    =   0   'False
-      AlignLeft       =   0   'False
-      NoWebView       =   0   'False
-      HideFileNames   =   0   'False
-      SingleClick     =   0   'False
-      SingleSelection =   0   'False
-      NoFolders       =   0   'False
-      Transparent     =   0   'False
-      ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   ""
-   End
-   Begin VB.CommandButton Command1 
-      Appearance      =   0  'Flat
-      Caption         =   "获取"
-      Default         =   -1  'True
-      Height          =   375
-      Left            =   7875
-      TabIndex        =   3
-      Top             =   405
-      Width           =   855
-   End
    Begin VB.TextBox Text2 
+      Appearance      =   0  'Flat
+      CausesValidation=   0   'False
       ForeColor       =   &H80000007&
-      Height          =   1425
+      Height          =   1560
       Left            =   45
       MultiLine       =   -1  'True
-      ScrollBars      =   3  'Both
+      ScrollBars      =   2  'Vertical
       TabIndex        =   1
-      Top             =   1530
+      Top             =   765
       Width           =   10890
    End
    Begin VB.TextBox Text1 
@@ -121,7 +76,7 @@ Begin VB.Form Form1
       Caption         =   "书记目录网址："
       Height          =   180
       Left            =   45
-      TabIndex        =   8
+      TabIndex        =   5
       Top             =   135
       Width           =   1260
    End
@@ -130,7 +85,7 @@ Begin VB.Form Form1
       Caption         =   "当前阅读网址："
       Height          =   255
       Left            =   45
-      TabIndex        =   5
+      TabIndex        =   4
       Top             =   495
       Width           =   1650
    End
@@ -141,187 +96,236 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
-
 Option Explicit
 Dim filename
 
-
 Private Sub cmdCommand2_Click()
-    Text2 = GetHtmlStr(Text1)
+    Dim strCont     As String
+    Dim tmpstrCont  As String
+    Dim tmpstrTitle As String
+    Dim strHTML     As String
+    
+    '=====================================获取html内容
+    strHTML = GetHtmlStr(Text1)
+    strHTML = LCase$(strHTML)
+    '====================================获取章节标题
+    tmpstrTitle = GetTitle(strHTML)
+    
+    '    Text3 = tmpstrCont
+    If Len(tmpstrTitle) = 0 Then
+        Exit Sub
+    End If
+    
+    tmpstrTitle = Trim$(tmpstrTitle)
+    '将章节标题作为文件名
+    If filename = "" Then
+        filename = tmpstrTitle
+    End If
+    
+    '====================================获取章节内容
+    tmpstrCont = GetContent(strHTML)
+
+    '    Text3 = tmpstrCont
+    If Len(tmpstrCont) = 0 Then
+        Exit Sub
+    End If
+    
+    tmpstrCont = ContentUnescape(tmpstrCont)
+    tmpstrCont = ContentFilter(tmpstrCont)
+    
+    strCont = tmpstrTitle & vbCrLf & tmpstrCont & vbCrLf & vbCrLf
+
+    Call fileWrite(App.Path & "\" & filename & ".txt", strCont)
+    '==================================== 获取下一章对应的rul
+    tmpstrCont = GetNextUrl(strHTML)
+ 
+    If Len(tmpstrCont) = 0 Then
+        Exit Sub
+    End If
+    
+    '==================================== 对书籍首页网址进行格式化
+    If Right$(txtHttpWww, 1) <> "/" Then
+        txtHttpWww = txtHttpWww & "/"
+    End If
+    
+    '==================================== 下一章的网址，填入文本框
+    Text1.Text = txtHttpWww & tmpstrCont
+
+    Text2 = tmpstrTitle & vbTab & vbTab & Text1 & vbCrLf & Text2
+
+    If chk.Value = vbChecked Then
+        Timer1.Enabled = True
+    End If
+    
 End Sub
 
 Private Function GetHtmlStr(strUrl As String) As String
     Dim xml As Object
     Set xml = CreateObject("msxml2.serverxmlhttp")
     xml.Open "GET", strUrl, False
-    xml.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+    '    xml.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
     xml.setRequestHeader "Accept-Language", "zh-cn"
-'    xml.setRequestHeader "Accept-Encoding", "gzip, deflate"
+    '    xml.setRequestHeader "Accept-Encoding", "gzip, deflate"
     xml.setRequestHeader "User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; SV1; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.04506.648; .NET CLR 3.5.21022; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)"
     xml.send
+
     Do While xml.ReadyState <> 4
         DoEvents
     Loop
-    GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
+
+    'GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
+    GetHtmlStr = xml.responsetext
     Set xml = Nothing
 End Function
 
+Private Function GetTitle(strHTML As String) As String
 
- 
-
-Private Sub Command1_Click()
+    Dim Pos, Cont, posL, posR
+    '寻找标题
+    Pos = InStr(1, strHTML, "htmltimu")
     
-    If Text1.Text = "" Then
-        'MsgBox "请输入正确的网址", , "错误！"
-        Text1.SetFocus
-    Else
-        WebBrowser1.Silent = True
-        WebBrowser1.Navigate Text1.Text
-        
+    If Pos = 0 Then
+
+        Exit Function
+
     End If
 
-End Sub
+    Cont = Mid$(strHTML, Pos)
+    posL = InStr(1, Cont, ">") + 1
+    posR = InStr(posL, Cont, "<")
+    GetTitle = Mid$(Cont, posL, posR - posL)
+    '寻找标题结束
+
+End Function
+ 
+Private Function GetContent(strHTML As String) As String
+    Dim Pos, Cont, posL, posR
+    '寻找内容
+    Pos = InStr(1, strHTML, "trail")
+
+    If Pos = 0 Then
+
+        Exit Function
+
+    End If
+
+    Cont = Mid$(strHTML, Pos)
+    '继续寻找
+  
+    '    Text2 = cont
+   
+    posL = InStr(1, Cont, "<p>")
+    posR = InStr(posL, Cont, "</div>")
+
+    GetContent = Mid$(Cont, posL, posR - posL)
+    
+    'Cont = Mid$(Cont, posR)
+    '寻找内容结束
+
+End Function
+ 
+Private Function ContentUnescape(strContent As String) As String
+    Dim i As Double, j As Double, k As Integer
+    Dim tmpStr
+    Dim tmpNum
+    j = 1
+
+    Do
+        j = InStr(j, strContent, "&#")
+
+        If j > 0 Then
+            k = InStr(j, strContent, ";")
+
+            If k > 0 Then
+                tmpStr = Mid$(strContent, j, k - j + 1)
+                tmpNum = Hex(Val(Mid$(tmpStr, 3, Len(tmpStr) - 3)))
+                strContent = Replace(strContent, tmpStr, ChrW(CLng("&h" & tmpNum)))
+            End If
+        End If
+
+    Loop While j
+    
+    ContentUnescape = strContent
+    
+End Function
+ 
+Private Function ContentFilter(strContent As String) As String
+    '内容过滤
+    Dim strCut As String
+    strContent = Replace$(strContent, " ", "")
+    strContent = Replace$(strContent, "　", "")
+    strContent = Replace(strContent, "&nbsp;", "")
+    
+    Dim a
+    a = InStr(1, strContent, "<p>本书来自品书网")
+
+    If a Then
+        strContent = Left$(strContent, a - 1)
+    End If
+    
+    Dim b
+    a = InStr(1, strContent, "请大家搜索")
+
+    If a Then
+        b = InStr(a, strContent, "更新最快的小说")
+
+        If b Then '
+            strCut = Mid$(strContent, a, b + 7 - a)
+            strContent = Replace$(strContent, strCut, "")
+        End If
+    End If
+    
+    strContent = Replace$(strContent, "<p>", "")
+    strContent = Replace$(strContent, "</p>", "")
+     
+    
+    strContent = Replace$(strContent, "如您已阅读到此章节，请移步到:新匕匕奇中文小說xinыqi.com阅读最新章节", "")
+    strContent = Replace$(strContent, "http://%77%77%77%2e%76%6f%64%74%77%2e%63%6f%6d", "")
+    strContent = Replace$(strContent, "敬请记住我们的网址:匕匕奇小說xinыqi.com。", "")
+    strContent = Replace$(strContent, "新·匕匕·奇·中·文·网·首·发xin", "")
+    strContent = Replace$(strContent, "[就上+新^^匕匕^^奇^^中^^文^^网+", "")
+    strContent = Replace$(strContent, "新匕匕·奇·中·文·蛧·首·发", "")
+    strContent = Replace$(strContent, "（閱讀最新章節首发.com）", "")
+    strContent = Replace$(strContent, "更多精彩小说请访问.com", "")
+    strContent = Replace$(strContent, "新匕匕奇新地址：www.m", "")
+    strContent = Replace$(strContent, "｛新匕匕奇中文小說m｝", "")
+    strContent = Replace$(strContent, "www.xinbiqi.com", "")
+    strContent = Replace$(strContent, "http：／／xin／", "")
+    strContent = Replace$(strContent, "www.vodtw.com", "")
+    strContent = Replace$(strContent, "www.xinbiqi.", "")
+    strContent = Replace$(strContent, "复制网址访问", "")
+    strContent = Replace$(strContent, "新比奇中文网", "")
+    strContent = Replace$(strContent, ".xinыqi.com", "")
+    strContent = Replace$(strContent, "品书网", "")
+     
+    strContent = Replace$(strContent, "（）", "")
+    
+    ContentFilter = strContent
+End Function
+ 
+Private Function GetNextUrl(strHTML As String) As String
+    Dim posL, posR
+    posL = InStr(1, strHTML, "下一页")
+    posR = InStrRev(strHTML, """", posL)
+    posL = InStrRev(strHTML, """", posR - 1) + 1
+    GetNextUrl = Mid$(strHTML, posL, posR - posL)
+End Function
+
+'App.Path & "\" & filename & ".txt"
+Function fileWrite(strFilename As String, strContent As String)
+    '写入文件
+    Dim i As Integer
+    i = FreeFile
+    Open strFilename For Append As #i
+    Print #i, strContent
+    Close #i
+End Function
 
 Private Sub Form_Load()
     filename = ""
 End Sub
 
 Private Sub Timer1_Timer()
-    Call Command1_Click
     Timer1.Enabled = False
-End Sub
-
-Private Sub WebBrowser1_DocumentComplete(ByVal pDisp As Object, URL As Variant)
-
-'End Sub
-'
-''Downloads By http://www.veryhuo.com
-'Private Sub WebBrowser1_DownloadComplete()
-    On Error Resume Next
-  
-    Dim Cont, Rcont, NextPage
-    Dim Pos, posL, posR
-    Dim DocTitle
-    
-    If URL = vbNullString Then
-        Exit Sub
-    End If
-    
-    If WebBrowser1.ReadyState <> READYSTATE_COMPLETE Then
-        Exit Sub
-    End If
-    
-    'cont = WebBrowser1.Document.documentElement.outertext
-    Cont = WebBrowser1.Document.documentElement.outerHTML
-
-    If Err Then
-        Err.Clear
-        Exit Sub
-    End If
-
-
-    Cont = LCase(Cont)
-    Cont = Replace$(Cont, " ", "")
-    
-    '寻找标题
-    Pos = InStr(1, Cont, "htmltimu")
-    
-    If Pos = 0 Then
-
-        Exit Sub
-
-    End If
-
-    Cont = Mid$(Cont, Pos)
-    posL = InStr(1, Cont, ">") + 1
-    posR = InStr(1, Cont, "<")
-    Rcont = Mid$(Cont, posL, posR - posL)
-    If filename = "" Then
-        filename = Rcont
-    End If
-    Rcont = Rcont & vbCrLf
-    Text2 = Rcont & "  " & Text1.Text & vbCrLf & Text2
-   
-    '寻找内容
-    Pos = InStr(1, Cont, "trail")
-
-    If Pos = 0 Then
-
-        Exit Sub
-
-    End If
-
-    Cont = Mid$(Cont, Pos)
-    '继续寻找
-  
-'    Text2 = cont
-   
-    posL = InStr(1, (Cont), "<p>")
-    posR = InStr(posL, (Cont), "</div>")
-
-    Rcont = Rcont & Mid$(Cont, posL, posR - posL)
-    
-    Cont = Mid$(Cont, posR)
-    
-    
-    Rcont = Replace$(Rcont, " ", "")
-    Rcont = Replace$(Rcont, "　", "")
-    Rcont = Replace(Rcont, "&nbsp;", "")
-    
-    Dim a
-    a = InStr(1, Rcont, "<p>本书来自品书网")
-    If a Then
-        Rcont = Left$(Rcont, a - 1)
-    End If
-    
-    Dim b
-    Dim strCut
-    a = InStr(1, Rcont, "请大家搜索")
-    If a Then
-        b = InStr(a, Rcont, "更新最快的小说")
-        If b Then '
-            strCut = Mid$(Rcont, a, b + 7 - a)
-            Rcont = Replace$(Rcont, strCut, "")
-        End If
-    End If
-    
-    
-    Rcont = Replace$(Rcont, "<p>", "")
-    Rcont = Replace$(Rcont, "</p>", "")
-    Rcont = Replace$(Rcont, "品书网", "")
-    Rcont = Replace$(Rcont, "www.vodtw.com", "")
-    Rcont = Replace$(Rcont, "复制网址访问", "")
-    Rcont = Replace$(Rcont, "http://%77%77%77%2e%76%6f%64%74%77%2e%63%6f%6d", "")
-    Rcont = Replace$(Rcont, "（）", "")
-    Rcont = Rcont & vbCrLf & vbCrLf
-    
-    '
-    Dim i As Integer
-    i = FreeFile
-    Open App.Path & "\" & filename & ".txt" For Append As #i
-    Print #i, Rcont
-    Close #i
-    '
-    
-     
-'    Text3 = zzzzz
-'    Text2 = cont
-    
-    posL = InStr(1, Cont, "下一页")
-    posR = InStrRev(Cont, """", posL)
-    posL = InStrRev(Cont, """", posR - 1) + 1
-    NextPage = Mid$(Cont, posL, posR - posL)
-    
-    
-    If Right$(txtHttpWww, 1) <> "/" Then
-        txtHttpWww = txtHttpWww & "/"
-    End If
-    
-    Text1.Text = txtHttpWww & NextPage
-
-    If chk.Value = vbChecked Then
-        Timer1.Enabled = True
-        Text3 = Rcont
-    End If
-
+    Call cmdCommand2_Click
 End Sub
