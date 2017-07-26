@@ -2,29 +2,29 @@ VERSION 5.00
 Begin VB.Form Form1 
    BackColor       =   &H80000005&
    Caption         =   "www.vodtw.com在线小说下载器"
-   ClientHeight    =   4425
+   ClientHeight    =   3615
    ClientLeft      =   60
    ClientTop       =   450
-   ClientWidth     =   11115
+   ClientWidth     =   10995
    FillColor       =   &H80000005&
    Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   4425
-   ScaleWidth      =   11115
+   ScaleHeight     =   3615
+   ScaleWidth      =   10995
    StartUpPosition =   1  '所有者中心
    Begin VB.TextBox txtText3 
       Appearance      =   0  'Flat
       Height          =   285
       Left            =   8100
       TabIndex        =   9
-      Text            =   "830"
+      Text            =   "1300"
       Top             =   90
-      Width           =   825
+      Width           =   780
    End
    Begin VB.CommandButton cmdgetmenu 
       Caption         =   "下载"
       Height          =   300
-      Left            =   9675
+      Left            =   9945
       TabIndex        =   7
       Top             =   90
       Width           =   990
@@ -133,6 +133,18 @@ Private Type UrlandTitle
     Title As String
 End Type
 
+Private Declare Function timeGetTime Lib "winmm.dll" () As Long '该声明得到系统开机到现在的时间(单位：毫秒)
+
+Public Function DelayMs(T As Long)
+    Dim Savetime As Long
+    Savetime = timeGetTime '记下开始时的时间
+    While timeGetTime < Savetime + T '循环等待
+        DoEvents '转让控制权
+    Wend
+End Function
+
+
+
 Private Sub cmdCommand2_Click()
     Dim strCont     As String
     Dim tmpstrCont  As String
@@ -203,7 +215,7 @@ Private Function GetHtmlStr(strUrl As String) As String
     xml.send
 
     Do While xml.ReadyState <> 4
-        DoEvents
+        DelayMs (30)
     Loop
 
     GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
@@ -264,6 +276,7 @@ Private Function ContentUnescape(strContent As String) As String
     j = 1
 
     Do
+        DoEvents
         j = InStr(j, strContent, "&#")
 
         If j > 0 Then
@@ -309,7 +322,8 @@ Private Function ContentFilter(strContent As String) As String
     End If
     
     strContent = Replace$(strContent, "<p>", "")
-    strContent = Replace$(strContent, "</p>", "")
+    'strContent = Replace$(strContent, "</p>", "")
+    strContent = Replace$(strContent, "</p>", vbCrLf)
      
     
     strContent = Replace$(strContent, "如您已阅读到此章节，请移步到:新匕匕奇中文小說xinыqi.com阅读最新章节", "")
@@ -418,6 +432,8 @@ Private Sub cmdgetmenu_Click()
     i = UBound(k) - 1
     ReDim UT(i) As UrlandTitle
     
+    Text2 = "一共找到 " & i & " 章" & vbCrLf
+    
     j = Val(txtText3) - 1
     If j < 0 Then j = 0
     
@@ -459,6 +475,7 @@ Private Sub cmdgetmenu_Click()
         Call SaveContent(UT(i))
         
     Next
+    Text2 = "下载完毕!" & vbCrLf & Text2
 End Sub
 
 Private Function SaveContent(UT As UrlandTitle)
