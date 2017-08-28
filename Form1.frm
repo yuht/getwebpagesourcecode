@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form Form1 
    BackColor       =   &H80000005&
-   Caption         =   "www.vodtw.com在线小说下载器"
+   Caption         =   "www.938xs.com - 在线小说下载器"
    ClientHeight    =   3615
    ClientLeft      =   60
    ClientTop       =   450
@@ -17,7 +17,7 @@ Begin VB.Form Form1
       Height          =   285
       Left            =   8100
       TabIndex        =   9
-      Text            =   "2000"
+      Text            =   "2167"
       Top             =   90
       Width           =   780
    End
@@ -29,22 +29,42 @@ Begin VB.Form Form1
       Top             =   90
       Width           =   990
    End
-   Begin VB.CommandButton cmdCommand2 
-      Caption         =   "下载"
-      Height          =   315
-      Left            =   7785
-      TabIndex        =   6
-      Top             =   630
-      Width           =   990
-   End
    Begin VB.TextBox txtHttpWww 
       Appearance      =   0  'Flat
       ForeColor       =   &H80000007&
       Height          =   300
       Left            =   1350
       TabIndex        =   0
-      Text            =   "http://www.vodtw.com/html/book/28/28902/"
+      Text            =   "http://www.938xs.com/html/book/28/28902/"
       Top             =   90
+      Width           =   6225
+   End
+   Begin VB.Timer Timer1 
+      Enabled         =   0   'False
+      Interval        =   10
+      Left            =   2385
+      Top             =   1260
+   End
+   Begin VB.TextBox Text2 
+      Appearance      =   0  'Flat
+      CausesValidation=   0   'False
+      ForeColor       =   &H80000007&
+      Height          =   3090
+      Left            =   45
+      MultiLine       =   -1  'True
+      ScrollBars      =   2  'Vertical
+      TabIndex        =   1
+      Top             =   450
+      Width           =   10890
+   End
+   Begin VB.TextBox Text1 
+      Appearance      =   0  'Flat
+      ForeColor       =   &H80000007&
+      Height          =   300
+      Left            =   1350
+      TabIndex        =   2
+      Text            =   "http://www.vodtw.com/html/book/28/28902/21716386.html"
+      Top             =   630
       Width           =   6225
    End
    Begin VB.CheckBox chk 
@@ -59,33 +79,13 @@ Begin VB.Form Form1
       Value           =   1  'Checked
       Width           =   1950
    End
-   Begin VB.Timer Timer1 
-      Enabled         =   0   'False
-      Interval        =   10
-      Left            =   2385
-      Top             =   1260
-   End
-   Begin VB.TextBox Text2 
-      Appearance      =   0  'Flat
-      CausesValidation=   0   'False
-      ForeColor       =   &H80000007&
-      Height          =   2415
-      Left            =   45
-      MultiLine       =   -1  'True
-      ScrollBars      =   2  'Vertical
-      TabIndex        =   1
-      Top             =   1125
-      Width           =   10890
-   End
-   Begin VB.TextBox Text1 
-      Appearance      =   0  'Flat
-      ForeColor       =   &H80000007&
-      Height          =   300
-      Left            =   1350
-      TabIndex        =   2
-      Text            =   "http://www.vodtw.com/html/book/28/28902/21716386.html"
+   Begin VB.CommandButton cmdCommand2 
+      Caption         =   "下载"
+      Height          =   315
+      Left            =   7785
+      TabIndex        =   6
       Top             =   630
-      Width           =   6225
+      Width           =   990
    End
    Begin VB.Label lbl 
       AutoSize        =   -1  'True

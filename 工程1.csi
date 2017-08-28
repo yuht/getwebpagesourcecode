@@ -1,12 +1,12 @@
 [历史]
 1=#P0#=mb	#P1#=ContentFilter	#P2#=在线小说下载/Form1/ContentFilter	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170823085022	#P7#=0	#P8#=51	.
 2=#P0#=mb	#P1#=cmdgetmenu_Click	#P2#=在线小说下载/Form1/cmdgetmenu_Click	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170823084143	#P7#=0	#P8#=34	.
-3=#P0#=mb	#P1#=GetHtmlStr	#P2#=在线小说下载/Form1/GetHtmlStr	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170726105806	#P7#=0	#P8#=8	.
-4=#P0#=mb	#P1#=DelayMs	#P2#=在线小说下载/Form1/DelayMs	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170726105227	#P7#=0	#P8#=5	.
-5=#P0#=mb	#P1#=cmdCommand2_Click	#P2#=在线小说下载/Form1/cmdCommand2_Click	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170823083609	#P7#=0	#P8#=1	.
-6=#P0#=mb	#P1#=getContent	#P2#=在线小说下载/Form1/getContent	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170726084215	#P7#=0	#P8#=-1	.
-7=#P0#=mb	#P1#=ContentUnescape	#P2#=在线小说下载/Form1/ContentUnescape	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170726081410	#P7#=0	#P8#=6	.
-8=#P0#=mb	#P1#=savecontent	#P2#=在线小说下载/Form1/savecontent	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170823083810	#P7#=0	#P8#=17	.
+3=#P0#=mb	#P1#=savecontent	#P2#=在线小说下载/Form1/savecontent	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170823083810	#P7#=0	#P8#=17	.
+4=#P0#=mb	#P1#=cmdCommand2_Click	#P2#=在线小说下载/Form1/cmdCommand2_Click	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170823083609	#P7#=0	#P8#=1	.
+5=#P0#=mb	#P1#=GetHtmlStr	#P2#=在线小说下载/Form1/GetHtmlStr	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170726105806	#P7#=0	#P8#=8	.
+6=#P0#=mb	#P1#=DelayMs	#P2#=在线小说下载/Form1/DelayMs	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170726105227	#P7#=0	#P8#=5	.
+7=#P0#=mb	#P1#=getContent	#P2#=在线小说下载/Form1/getContent	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170726084215	#P7#=0	#P8#=-1	.
+8=#P0#=mb	#P1#=ContentUnescape	#P2#=在线小说下载/Form1/ContentUnescape	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170726081410	#P7#=0	#P8#=6	.
 9=#P0#=mb	#P1#=Form_Unload	#P2#=在线小说下载/Form1/Form_Unload	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170627133443	#P7#=0	#P8#=1	.
 10=#P0#=mb	#P1#=Form_Load	#P2#=在线小说下载/Form1/Form_Load	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170627131739	#P7#=0	#P8#=1	.
 11=#P0#=mb	#P1#=fileWrite	#P2#=在线小说下载/Form1/fileWrite	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170627120635	#P7#=0	#P8#=5	.
