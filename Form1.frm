@@ -17,7 +17,7 @@ Begin VB.Form Form1
       Height          =   285
       Left            =   8100
       TabIndex        =   9
-      Text            =   "1300"
+      Text            =   "2000"
       Top             =   90
       Width           =   780
    End
@@ -126,8 +126,11 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 Option Explicit
-Dim filename
 
+Dim filename
+Dim BookTitle
+    
+    
 Private Type UrlandTitle
     Url As String
     Title As String
@@ -339,13 +342,17 @@ Private Function ContentFilter(strContent As String) As String
     strContent = Replace$(strContent, "www.xinbiqi.com", "")
     strContent = Replace$(strContent, "http：／／xin／", "")
     strContent = Replace$(strContent, "www.vodtw.com", "")
+    strContent = Replace$(strContent, "www.vodtw.net", "")
     strContent = Replace$(strContent, "www.xinbiqi.", "")
     strContent = Replace$(strContent, "复制网址访问", "")
     strContent = Replace$(strContent, "新比奇中文网", "")
     strContent = Replace$(strContent, ".xinыqi.com", "")
     strContent = Replace$(strContent, "品书网", "")
-     
     strContent = Replace$(strContent, "（）", "")
+    strContent = Replace$(strContent, "()", "")
+    
+     
+
     
     ContentFilter = strContent
 End Function
@@ -374,7 +381,6 @@ Private Sub cmdgetmenu_Click()
     
     Dim strMenulist
     Dim posL, posR
-    
         
     '==================================== 对书籍首页网址进行格式化
     If Right$(txtHttpWww, 1) <> "/" Then
@@ -390,6 +396,38 @@ Private Sub cmdgetmenu_Click()
     strMenulist = Replace$(strMenulist, vbTab, "")
     
     'Call fileWrite(App.Path & "/debug.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
+    
+    posL = InStr(1, strMenulist, "bookname")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
+    posL = InStr(posL, strMenulist, "<h1>")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
+    posL = InStr(posL, strMenulist, ">")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
+    posR = InStr(posL, strMenulist, "<")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
+    BookTitle = Mid(strMenulist, posL + 1, posR - posL - 1)
+    
+    Text2 = "书名:" & BookTitle
+    
+    
+    'Call fileWrite(App.Path & "/debug.log", "Book Title:" & BookTitle)
+    '将章节标题作为文件名
+    If filename = "" Then
+        filename = BookTitle 'tmpstrTitle
+    End If
+    
     
     posL = InStr(1, strMenulist, "<dd>")
     If posL = 0 Then
@@ -432,11 +470,11 @@ Private Sub cmdgetmenu_Click()
     i = UBound(k) - 1
     ReDim UT(i) As UrlandTitle
     
-    Text2 = "一共找到 " & i & " 章" & vbCrLf
+    Text2 = "一共找到 " & i & " 章" & vbCrLf & Text2
     
     j = Val(txtText3) - 1
     If j < 0 Then j = 0
-    
+     
     txtText3 = j + 1
     
     For i = j To UBound(k) - 1
@@ -464,13 +502,13 @@ Private Sub cmdgetmenu_Click()
     
     For i = j To UBound(UT)
         DoEvents
-        If i < 1763 Then
-            UT(i).Title = "第" & i + 1 & "章 " & UT(i).Title
-        ElseIf i = 1763 Then
-            UT(i).Title = "关于更新想说的话"
-        Else
+'        If i < 1763 Then
+'            UT(i).Title = "第" & i + 1 & "章 " & UT(i).Title
+'        ElseIf i = 1763 Then
+'            UT(i).Title = "关于更新想说的话"
+'        Else
             UT(i).Title = "第" & i & "章 " & UT(i).Title
-        End If
+'        End If
         
         Call SaveContent(UT(i))
         
@@ -495,10 +533,7 @@ Private Function SaveContent(UT As UrlandTitle)
         
     tmpstrTitle = UT.Title
     
-    '将章节标题作为文件名
-    If filename = "" Then
-        filename = tmpstrTitle
-    End If
+
     
     '====================================获取章节内容
     tmpstrCont = GetContent(strHTML)
@@ -532,3 +567,4 @@ Private Sub Timer1_Timer()
     Timer1.Enabled = False
     Call cmdCommand2_Click
 End Sub
+
