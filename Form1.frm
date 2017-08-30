@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form Form1 
    BackColor       =   &H80000005&
-   Caption         =   "www.938xs.com - 在线小说下载器"
+   Caption         =   "在线小说下载器"
    ClientHeight    =   3615
    ClientLeft      =   60
    ClientTop       =   450
@@ -17,7 +17,7 @@ Begin VB.Form Form1
       Height          =   285
       Left            =   8100
       TabIndex        =   9
-      Text            =   "2167"
+      Text            =   "1"
       Top             =   90
       Width           =   780
    End
@@ -35,7 +35,7 @@ Begin VB.Form Form1
       Height          =   300
       Left            =   1350
       TabIndex        =   0
-      Text            =   "http://www.938xs.com/html/book/28/28902/"
+      Text            =   "http://www.heiyange.com/read/4105/"
       Top             =   90
       Width           =   6225
    End
@@ -218,7 +218,7 @@ Private Function GetHtmlStr(strUrl As String) As String
     xml.send
 
     Do While xml.ReadyState <> 4
-        DelayMs (30)
+        DelayMs (100)
     Loop
 
     GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
@@ -249,7 +249,7 @@ End Function
 Private Function GetContent(strHTML As String) As String
     Dim Pos, Cont, posL, posR
     '寻找内容
-    Pos = InStr(1, strHTML, "trail")
+    Pos = InStr(1, strHTML, "id=""content"">") + 13
 
     If Pos = 0 Then
 
@@ -262,11 +262,16 @@ Private Function GetContent(strHTML As String) As String
   
     '    Text2 = cont
    
-    posL = InStr(1, Cont, "<p>")
-    posR = InStr(posL, Cont, "</div>")
-
-    GetContent = Mid$(Cont, posL, posR - posL)
+    'posL = InStr(1, Cont, "content"">") + 9
+    posR = InStr(1, Cont, "<div") - 1
     
+    If posR = -1 Then
+        Exit Function
+    End If
+
+'    GetContent = Mid$(Cont, posL, posR - posL)
+    GetContent = Left(Cont, posR)
+    'Call fileWrite(App.Path & "/debug_getcontent.log", CStr(GetContent))
     'Cont = Mid$(Cont, posR)
     '寻找内容结束
 
@@ -304,6 +309,10 @@ Private Function ContentFilter(strContent As String) As String
     strContent = Replace$(strContent, " ", "")
     strContent = Replace$(strContent, "　", "")
     strContent = Replace(strContent, "&nbsp;", "")
+    strContent = Replace(strContent, "<br/>" & vbCrLf & "<br/>", "")
+
+
+    
     
     Dim a
     a = InStr(1, strContent, "<p>本书来自品书网")
@@ -351,6 +360,11 @@ Private Function ContentFilter(strContent As String) As String
     strContent = Replace$(strContent, "（）", "")
     strContent = Replace$(strContent, "()", "")
     
+    strContent = Replace$(strContent, "938小说网www.938xs.com", "")
+    strContent = Replace$(strContent, "http://www.938xs.com", "")
+    strContent = Replace$(strContent, "938小说网", "")
+    strContent = Replace$(strContent, "本书来自", "")
+    
      
 
     
@@ -391,18 +405,21 @@ Private Sub cmdgetmenu_Click()
     
     strMenulist = GetHtmlStr(txtHttpWww)
     strMenulist = LCase$(strMenulist)
-    
+    'Call fileWrite(App.Path & "/debug.log", "strMenulist" & vbCrLf & vbCrLf & "-------------------------------------" & vbCrLf & strMenulist)
     strMenulist = Replace$(strMenulist, "  ", "")
     strMenulist = Replace$(strMenulist, vbTab, "")
+    strMenulist = Replace$(strMenulist, vbCrLf & vbCrLf, vbCrLf)
+    strMenulist = Replace$(strMenulist, vbCrLf & " ", vbCrLf)
     
+    'Call fileWrite(App.Path & "/debug.log", "strMenulist" & vbCrLf & vbCrLf & "-------------------------------------" & vbCrLf & strMenulist)
     'Call fileWrite(App.Path & "/debug.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
     
-    posL = InStr(1, strMenulist, "bookname")
+    posL = InStr(1, strMenulist, "read")
     If posL = 0 Then
         Exit Sub
     End If
     
-    posL = InStr(posL, strMenulist, "<h1>")
+    posL = InStr(posL, strMenulist, "<h3>")
     If posL = 0 Then
         Exit Sub
     End If
@@ -422,25 +439,34 @@ Private Sub cmdgetmenu_Click()
     Text2 = "书名:" & BookTitle
     
     
-    'Call fileWrite(App.Path & "/debug.log", "Book Title:" & BookTitle)
+    'Call fileWrite(App.Path & "/debug_Booktitle.log", "Book Title:" & BookTitle)
     '将章节标题作为文件名
     If filename = "" Then
         filename = BookTitle 'tmpstrTitle
     End If
     
     
-    posL = InStr(1, strMenulist, "<dd>")
-    If posL = 0 Then
-        Exit Sub
-    End If
+    '截取章节信息
+'    posL = InStr(1, strMenulist, "<dd>")
+'    If posL = 0 Then
+'        Exit Sub
+'    End If
+'    strMenulist = Mid$(strMenulist, posL)
     
-    strMenulist = Mid$(strMenulist, posL)
+    
     'Call fileWrite(App.Path & "/debug.log", "截取dd后的信息:" & vbCrLf & strMenulist)
     
-    posL = InStr(1, strMenulist, "<ul>")
+    posL = InStr(1, strMenulist, "<ul")
     If posL = 0 Then
         Exit Sub
     End If
+    
+    posL = InStr(posL, strMenulist, "<a")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
+    
     
     strMenulist = Mid$(strMenulist, posL)
     'Call fileWrite(App.Path & "/debug.log", "截取<ul>后的信息:" & vbCrLf & strMenulist)
@@ -451,20 +477,26 @@ Private Sub cmdgetmenu_Click()
         Exit Sub
     End If
     
-    strMenulist = Left(strMenulist, posR - 1)
-    'Call fileWrite(App.Path & "/debug.log", "截取<ul></ul>之间的信息:" & vbCrLf & strMenulist)
     
-    strMenulist = Replace$(strMenulist, "<ul>", "")
-    strMenulist = Replace$(strMenulist, "</ul>", "")
+    
+    strMenulist = Left(strMenulist, posR - 1)
+'    Call fileWrite(App.Path & "/debug_ul_eul.log", "截取<ul></ul>之间的信息:" & vbCrLf & strMenulist)
+    
+'    strMenulist = Replace$(strMenulist, "<ul>", "")
+'    strMenulist = Replace$(strMenulist, "</ul>", "")
     strMenulist = Replace$(strMenulist, "<li>", "")
     strMenulist = Replace$(strMenulist, "</li>", "")
-    strMenulist = Replace$(strMenulist, vbCr, "")
-    strMenulist = Replace$(strMenulist, vbLf, "")
+    strMenulist = Replace$(strMenulist, "<span></span>", "")
+    strMenulist = Replace$(strMenulist, "-" & BookTitle, "")
+'    strMenulist = Replace$(strMenulist, vbCr, "")
+'    strMenulist = Replace$(strMenulist, vbLf, "")
     
-    'Call fileWrite(App.Path & "/debug.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
+    'Call fileWrite(App.Path & "/debug_li.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
     
     Dim k
     Dim i, j
+    Dim hostUrl
+    
     Dim s As String
     k = Split(strMenulist, "</a>")
     i = UBound(k) - 1
@@ -476,6 +508,7 @@ Private Sub cmdgetmenu_Click()
     If j < 0 Then j = 0
      
     txtText3 = j + 1
+    hostUrl = Left(txtHttpWww, InStr(10, txtHttpWww, "/") - 1)
     
     For i = j To UBound(k) - 1
         k(i) = Trim$(k(i))
@@ -483,11 +516,11 @@ Private Sub cmdgetmenu_Click()
         If posL <> 0 Then
             posR = InStr(posL, k(i), """") - 1
              If posR <> 0 Then
-                UT(i).Url = txtHttpWww & Mid$(k(i), posL, posR - posL + 1)
+                UT(i).Url = hostUrl & Mid$(k(i), posL, posR - posL + 1)
             End If
         End If
         If Len(UT(i).Url) Then
-            posL = InStrRev(k(i), " ") + 1
+            posL = InStrRev(k(i), ">") + 1
             If posL <> 0 Then
                 UT(i).Title = Mid$(k(i), posL)
                 's = s & i + 1 & "-" & UT(i).Url & "-" & UT(i).Title & vbCrLf
@@ -507,7 +540,8 @@ Private Sub cmdgetmenu_Click()
 '        ElseIf i = 1763 Then
 '            UT(i).Title = "关于更新想说的话"
 '        Else
-            UT(i).Title = "第" & i & "章 " & UT(i).Title
+'            UT(i).Title = "第" & i & "章 " & UT(i).Title
+            UT(i).Title = UT(i).Title
 '        End If
         
         Call SaveContent(UT(i))
@@ -527,7 +561,7 @@ Private Function SaveContent(UT As UrlandTitle)
     strHTML = GetHtmlStr(UT.Url)
     strHTML = LCase$(strHTML)
     
-     'Call fileWrite(App.Path & "/debugcont.log", UT.Url & vbCrLf & UT.Title & strHTML)
+'    Call fileWrite(App.Path & "/debug_cont.log", UT.Url & vbCrLf & UT.Title & strHTML)
     
     '====================================获取章节标题
         
@@ -542,7 +576,7 @@ Private Function SaveContent(UT As UrlandTitle)
     If Len(tmpstrCont) = 0 Then
         Exit Function
     End If
-    
+    'Call fileWrite(App.Path & "/debug_cont.log", UT.Url & vbCrLf & UT.Title & tmpstrCont)
     tmpstrCont = ContentUnescape(tmpstrCont)
     tmpstrCont = ContentFilter(tmpstrCont)
     
