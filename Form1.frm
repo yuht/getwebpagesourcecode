@@ -1,15 +1,17 @@
 VERSION 5.00
 Begin VB.Form Form1 
    BackColor       =   &H80000005&
+   BorderStyle     =   1  'Fixed Single
    Caption         =   "在线小说下载器"
-   ClientHeight    =   3615
-   ClientLeft      =   60
-   ClientTop       =   450
+   ClientHeight    =   3600
+   ClientLeft      =   -15
+   ClientTop       =   375
    ClientWidth     =   10995
    FillColor       =   &H80000005&
    Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   3615
+   MaxButton       =   0   'False
+   ScaleHeight     =   3600
    ScaleWidth      =   10995
    StartUpPosition =   1  '所有者中心
    Begin VB.TextBox txtText3 
@@ -544,6 +546,7 @@ Private Sub cmdgetmenu_Click()
             UT(i).Title = UT(i).Title
 '        End If
         
+        Me.Caption = BookTitle & "   " & i & "/" & UBound(k) - 1
         Call SaveContent(UT(i))
         
     Next
