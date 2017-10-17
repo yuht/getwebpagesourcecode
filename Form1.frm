@@ -37,7 +37,7 @@ Begin VB.Form Form1
       Height          =   300
       Left            =   1350
       TabIndex        =   0
-      Text            =   "http://www.ykanshu.com/files/article/html/129/129598/"
+      Text            =   "http://www.biqugecom.com/36/36841/"
       Top             =   90
       Width           =   6225
    End
@@ -248,15 +248,46 @@ Private Function GetTitle(strHTML As String) As String
 
 End Function
  
+Private Function GetTitles(strHTML As String) As String
+    Dim Pos, Cont, posL, posR
+    '寻找内容
+    Pos = InStr(1, strHTML, "class=""bookname"">")
+
+    If Pos = 0 Then
+        Exit Function
+    End If
+    
+    Pos = InStr(Pos, strHTML, "<h1>")
+
+    If Pos = 0 Then
+        Exit Function
+    End If
+    Cont = Mid$(strHTML, Pos + 4)
+    '继续寻找
+  
+    '    Text2 = cont
+   
+    'posL = InStr(1, Cont, "content"">") + 9
+    posR = InStr(1, Cont, "</h1>")
+    
+    If posR = 0 Then
+        Exit Function
+    End If
+
+'    GetContent = Mid$(Cont, posL, posR - posL)
+    GetTitles = Trim(Left(Cont, posR - 1))
+    
+End Function
+
+ 
+ 
 Private Function GetContent(strHTML As String) As String
     Dim Pos, Cont, posL, posR
     '寻找内容
     Pos = InStr(1, strHTML, "id=""content"">") + 13
 
     If Pos = 0 Then
-
         Exit Function
-
     End If
 
     Cont = Mid$(strHTML, Pos)
@@ -308,55 +339,58 @@ End Function
 Private Function ContentFilter(strContent As String) As String
     '内容过滤
     Dim strCut As String
-    strContent = Replace$(strContent, " ", "")
-    strContent = Replace$(strContent, "　", "")
+    strContent = Replace(strContent, " ", "")
+    strContent = Replace(strContent, "　", "")
+    strContent = Replace(strContent, "‘", "")
+    strContent = Replace(strContent, "’", "")
     strContent = Replace(strContent, "&nbsp;", "")
-    strContent = Replace(strContent, "?", "")
-    strContent = Replace$(strContent, "<br/>", vbCrLf)
-    strContent = Replace$(strContent, vbCrLf & vbCrLf, vbCrLf)
+    'strContent = Replace(strContent, "?", "")
+    strContent = Replace(strContent, "<br/>", vbCrLf)
+    'strContent = Replace(strContent, vbCr, vbCrLf)
+    'strContent = Replace(strContent, vbLf, vbCrLf)
+    strContent = Replace(strContent, vbCrLf & vbCrLf, vbCrLf)
+    strContent = Replace(strContent, vbCrLf & vbCrLf, vbCrLf)
+    strContent = Replace(strContent, vbCrLf & vbCrLf, vbCrLf)
     
+    strContent = Replace(strContent, "<script>readx();</script>", "")
 
     
     
-'    Dim a
-'    a = InStr(1, strContent, "<p>本书来自品书网")
-'
-'    If a Then
-'        strContent = Left$(strContent, a - 1)
-'    End If
-'
-'    Dim b
-'    a = InStr(1, strContent, "请大家搜索")
-'
-'    If a Then
-'        b = InStr(a, strContent, "更新最快的小说")
-'
-'        If b Then '
-'            strCut = Mid$(strContent, a, b + 7 - a)
-'            strContent = Replace$(strContent, strCut, "")
-'        End If
-'    End If
+    Dim tmpAD
+    Dim a
+    a = InStr(1, strContent, "<ahref")
+
+    If a Then
+        tmpAD = Mid(strContent, a - 1)
+
+        Dim b
+        b = InStr(1, tmpAD, "</a>")
+        If b Then '
+            tmpAD = Left$(tmpAD, b + 4)
+            strContent = Replace$(strContent, tmpAD, "")
+        End If
+    End If
     
 '    strContent = Replace$(strContent, "<p>", "")
 '    'strContent = Replace$(strContent, "</p>", "")
 '    strContent = Replace$(strContent, "</p>", vbCrLf)
      
     
-    strContent = Replace$(strContent, "壹看书ｗｗ看ｗ·１ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "壹看书ｗｗｗ看·１ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "要看书ｗ书ｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａ要ｎ书ｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "要看书ｗｗｗ·１ｋａ书ｎｓｈｕ·ｃｃ ", "")
-    strContent = Replace$(strContent, "要看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "要看书ｗｗｗ·１书ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋａ看ｎｓｈｕ看·ｃｃ", "")
-    strContent = Replace$(strContent, "一看书ｗｗｗ要·１要ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋ要ａｎｓ看ｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａｎｓ书ｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "壹看书ｗｗｗ书·１ｋａｎｓｈｕ·ｃｃ", "")
-    strContent = Replace$(strContent, "要看书ｗｗ要ｗ·１ｋａ书ｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "壹看书ｗｗ看ｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "壹看书ｗｗｗ看·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "要看书ｗ书ｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａ要ｎ书ｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "要看书ｗｗｗ·１ｋａ书ｎｓｈｕ·ｃｃ ", "")
+'    strContent = Replace$(strContent, "要看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "要看书ｗｗｗ·１书ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋａ看ｎｓｈｕ看·ｃｃ", "")
+'    strContent = Replace$(strContent, "一看书ｗｗｗ要·１要ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋ要ａｎｓ看ｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａｎｓ书ｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "壹看书ｗｗｗ书·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "要看书ｗｗ要ｗ·１ｋａ书ｎｓｈｕ·ｃｃ", "")
 '    strContent = Replace$(strContent, "壹看书ｗ?ｗｗ?·１?ｋａｎｓｈｕ·ｃｃ", "")
 '    strContent = Replace$(strContent, "一看书?ｗ?ｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
 '    strContent = Replace$(strContent, "要看书ｗ?ｗ?ｗ·１ｋａｎｓｈｕ·ｃｃ", "")
@@ -409,8 +443,8 @@ Private Sub cmdgetmenu_Click()
     
     strMenulist = GetHtmlStr(txtHttpWww)
     strMenulist = LCase$(strMenulist)
-    'Call fileWrite(App.Path & "/debug.log", "strMenulist" & vbCrLf & vbCrLf & "-------------------------------------" & vbCrLf & strMenulist)
     strMenulist = Replace$(strMenulist, "  ", "")
+    strMenulist = Replace$(strMenulist, "&nbsp;", "")
     strMenulist = Replace$(strMenulist, vbTab, "")
     strMenulist = Replace$(strMenulist, "<br/>", vbCrLf)
     
@@ -418,7 +452,7 @@ Private Sub cmdgetmenu_Click()
     strMenulist = Replace$(strMenulist, vbCrLf & " ", vbCrLf)
     
     'Call fileWrite(App.Path & "/debug_strmenu.log", "strMenulist" & vbCrLf & vbCrLf & "-------------------------------------" & vbCrLf & strMenulist)
-'    Call fileWrite(App.Path & "/debug_replaceSPACE.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
+    'Call fileWrite(App.Path & "/debug_replaceSPACE.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
     
     posL = InStr(1, strMenulist, "<div id=""info"">")
     If posL = 0 Then
@@ -453,29 +487,27 @@ Private Sub cmdgetmenu_Click()
     
     
     '截取章节信息
-'    posL = InStr(1, strMenulist, "<dd>")
-'    If posL = 0 Then
-'        Exit Sub
-'    End If
-'    strMenulist = Mid$(strMenulist, posL)
     
     
-    'Call fileWrite(App.Path & "/debug_cap.log", "截取dd后的信息:" & vbCrLf & strMenulist)
-    
-    posL = InStr(1, strMenulist, "<dd><a")
+    posL = InStr(1, strMenulist, "</dt>")
+    If posL = 0 Then
+        Exit Sub
+    End If
+
+    posL = InStr(posL + 1, strMenulist, "</dt>")
     If posL = 0 Then
         Exit Sub
     End If
     
-'    posL = InStr(posL, strMenulist, "<a")
-'    If posL = 0 Then
-'        Exit Sub
-'    End If
-    
+    posL = InStr(posL + 1, strMenulist, "<dd><a")
+    If posL = 0 Then
+        Exit Sub
+    End If
+     
     
     
     strMenulist = Mid$(strMenulist, posL)
-'    Call fileWrite(App.Path & "/debug_cap2.log", "截取<ul>后的信息:" & vbCrLf & strMenulist)
+    'Call fileWrite(App.Path & "/debug_cap2.log", "截取<dd><a后的信息:" & vbCrLf & strMenulist)
     
     
     posR = InStr(1, strMenulist, "</dl>")
@@ -486,7 +518,7 @@ Private Sub cmdgetmenu_Click()
     
     
     strMenulist = Left(strMenulist, posR - 1)
-'    Call fileWrite(App.Path & "/debug_ul_eul.log", "截取<ul></ul>之间的信息:" & vbCrLf & strMenulist)
+    'Call fileWrite(App.Path & "/debug_ul_eul.log", "截取<ul></ul>之间的信息:" & vbCrLf & strMenulist)
     
 '    strMenulist = Replace$(strMenulist, "<ul>", "")
 '    strMenulist = Replace$(strMenulist, "</ul>", "")
@@ -497,18 +529,31 @@ Private Sub cmdgetmenu_Click()
 '    strMenulist = Replace$(strMenulist, vbCr, "")
 '    strMenulist = Replace$(strMenulist, vbLf, "")
     
-'    Call fileWrite(App.Path & "/debug_dd.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
+    'Call fileWrite(App.Path & "/debug_dd.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
     
     Dim k
     Dim i, j
     Dim hostUrl
-    
+    Dim TotalCap
     Dim s As String
     k = Split(strMenulist, "</a>")
-    i = UBound(k) - 1
-    ReDim UT(i) As UrlandTitle
     
-    Text2 = "一共找到 " & i & " 章" & vbCrLf & Text2
+'    For i = 0 To TotalCap - 1
+'        For j = i + 1 To TotalCap
+'            If k(i) = k(j) Then
+'                k(j) = ""
+'            End If
+'            DoEvents
+'        Next
+'        DoEvents
+'    Next
+    
+    
+    TotalCap = UBound(k) - 2
+    
+    ReDim UT(TotalCap) As UrlandTitle
+    
+    Text2 = "一共找到 " & TotalCap & " 章" & vbCrLf & Text2
     
     j = Val(txtText3) - 1
     If j < 0 Then j = 0
@@ -516,28 +561,33 @@ Private Sub cmdgetmenu_Click()
     txtText3 = j + 1
     hostUrl = Left(txtHttpWww, InStr(10, txtHttpWww, "/") - 1)
     
-    For i = j To UBound(k) - 1
-        k(i) = Trim$(k(i))
-        posL = InStr(1, k(i), """") + 1
-        If posL <> 0 Then
-            posR = InStr(posL, k(i), """") - 1
-             If posR <> 0 Then
-                UT(i).Url = hostUrl & Mid$(k(i), posL, posR - posL + 1)
-            End If
-        End If
-        If Len(UT(i).Url) Then
-            posL = InStrRev(k(i), ">") + 1
+    For i = j To TotalCap
+        If Len(k(i)) Then
+            k(i) = Trim$(k(i))
+            posL = InStr(1, k(i), """") + 1
             If posL <> 0 Then
-                UT(i).Title = Mid$(k(i), posL)
-                's = s & i + 1 & "-" & UT(i).Url & "-" & UT(i).Title & vbCrLf
+                posR = InStr(posL, k(i), """") - 1
+                 If posR <> 0 Then
+                    UT(i).Url = hostUrl & Mid$(k(i), posL, posR - posL + 1)
+                    
+                End If
             End If
+            If Len(UT(i).Url) Then
+                posL = InStrRev(k(i), ">") + 1
+                If posL <> 0 Then
+                    UT(i).Title = Mid$(k(i), posL)
+                End If
+            End If
+            'Call fileWrite(App.Path & "/debug_Totalcaps.log", "第 " & i & vbTab & " 章:" & UT(i).Title & " - " & UT(i).Url & vbCrLf)
+            
         End If
-        
         DoEvents
     Next
-    'Call fileWrite(App.Path & "/debuglist.log", s)
     
-    'Exit Sub
+    
+    
+
+    
     
     For i = j To UBound(UT)
         DoEvents
@@ -568,11 +618,11 @@ Private Function SaveContent(UT As UrlandTitle)
     strHTML = GetHtmlStr(UT.Url)
     strHTML = LCase$(strHTML)
     
-'    Call fileWrite(App.Path & "/debug_cont.log", UT.Url & vbCrLf & UT.Title & strHTML)
+    'Call fileWrite(App.Path & "/debug_cont.log", UT.Url & vbCrLf & UT.Title & strHTML)
     
     '====================================获取章节标题
         
-    tmpstrTitle = UT.Title
+    tmpstrTitle = GetTitles(strHTML) 'UT.Title
     
 
     
