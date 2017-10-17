@@ -37,7 +37,7 @@ Begin VB.Form Form1
       Height          =   300
       Left            =   1350
       TabIndex        =   0
-      Text            =   "http://www.heiyange.com/read/4105/"
+      Text            =   "http://www.ykanshu.com/files/article/html/129/129598/"
       Top             =   90
       Width           =   6225
    End
@@ -265,7 +265,7 @@ Private Function GetContent(strHTML As String) As String
     '    Text2 = cont
    
     'posL = InStr(1, Cont, "content"">") + 9
-    posR = InStr(1, Cont, "<div") - 1
+    posR = InStr(1, Cont, "</div>") - 1
     
     If posR = -1 Then
         Exit Function
@@ -311,61 +311,63 @@ Private Function ContentFilter(strContent As String) As String
     strContent = Replace$(strContent, " ", "")
     strContent = Replace$(strContent, "　", "")
     strContent = Replace(strContent, "&nbsp;", "")
-    strContent = Replace(strContent, "<br/>" & vbCrLf & "<br/>", "")
-
+    strContent = Replace(strContent, "?", "")
+    strContent = Replace$(strContent, "<br/>", vbCrLf)
+    strContent = Replace$(strContent, vbCrLf & vbCrLf, vbCrLf)
+    
 
     
     
-    Dim a
-    a = InStr(1, strContent, "<p>本书来自品书网")
-
-    If a Then
-        strContent = Left$(strContent, a - 1)
-    End If
+'    Dim a
+'    a = InStr(1, strContent, "<p>本书来自品书网")
+'
+'    If a Then
+'        strContent = Left$(strContent, a - 1)
+'    End If
+'
+'    Dim b
+'    a = InStr(1, strContent, "请大家搜索")
+'
+'    If a Then
+'        b = InStr(a, strContent, "更新最快的小说")
+'
+'        If b Then '
+'            strCut = Mid$(strContent, a, b + 7 - a)
+'            strContent = Replace$(strContent, strCut, "")
+'        End If
+'    End If
     
-    Dim b
-    a = InStr(1, strContent, "请大家搜索")
-
-    If a Then
-        b = InStr(a, strContent, "更新最快的小说")
-
-        If b Then '
-            strCut = Mid$(strContent, a, b + 7 - a)
-            strContent = Replace$(strContent, strCut, "")
-        End If
-    End If
-    
-    strContent = Replace$(strContent, "<p>", "")
-    'strContent = Replace$(strContent, "</p>", "")
-    strContent = Replace$(strContent, "</p>", vbCrLf)
+'    strContent = Replace$(strContent, "<p>", "")
+'    'strContent = Replace$(strContent, "</p>", "")
+'    strContent = Replace$(strContent, "</p>", vbCrLf)
      
     
-    strContent = Replace$(strContent, "如您已阅读到此章节，请移步到:新匕匕奇中文小說xinыqi.com阅读最新章节", "")
-    strContent = Replace$(strContent, "http://%77%77%77%2e%76%6f%64%74%77%2e%63%6f%6d", "")
-    strContent = Replace$(strContent, "敬请记住我们的网址:匕匕奇小說xinыqi.com。", "")
-    strContent = Replace$(strContent, "新·匕匕·奇·中·文·网·首·发xin", "")
-    strContent = Replace$(strContent, "[就上+新^^匕匕^^奇^^中^^文^^网+", "")
-    strContent = Replace$(strContent, "新匕匕·奇·中·文·蛧·首·发", "")
-    strContent = Replace$(strContent, "（閱讀最新章節首发.com）", "")
-    strContent = Replace$(strContent, "更多精彩小说请访问.com", "")
-    strContent = Replace$(strContent, "新匕匕奇新地址：www.m", "")
-    strContent = Replace$(strContent, "｛新匕匕奇中文小說m｝", "")
-    strContent = Replace$(strContent, "www.xinbiqi.com", "")
-    strContent = Replace$(strContent, "http：／／xin／", "")
-    strContent = Replace$(strContent, "www.vodtw.com", "")
-    strContent = Replace$(strContent, "www.vodtw.net", "")
-    strContent = Replace$(strContent, "www.xinbiqi.", "")
-    strContent = Replace$(strContent, "复制网址访问", "")
-    strContent = Replace$(strContent, "新比奇中文网", "")
-    strContent = Replace$(strContent, ".xinыqi.com", "")
-    strContent = Replace$(strContent, "品书网", "")
-    strContent = Replace$(strContent, "（）", "")
-    strContent = Replace$(strContent, "()", "")
-    
-    strContent = Replace$(strContent, "938小说网www.938xs.com", "")
-    strContent = Replace$(strContent, "http://www.938xs.com", "")
-    strContent = Replace$(strContent, "938小说网", "")
-    strContent = Replace$(strContent, "本书来自", "")
+    strContent = Replace$(strContent, "壹看书ｗｗ看ｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "壹看书ｗｗｗ看·１ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "要看书ｗ书ｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａ要ｎ书ｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "要看书ｗｗｗ·１ｋａ书ｎｓｈｕ·ｃｃ ", "")
+    strContent = Replace$(strContent, "要看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "要看书ｗｗｗ·１书ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋａ看ｎｓｈｕ看·ｃｃ", "")
+    strContent = Replace$(strContent, "一看书ｗｗｗ要·１要ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "壹看书ｗｗｗ·１ｋ要ａｎｓ看ｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "一看书ｗｗｗ·１ｋａｎｓ书ｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "壹看书ｗｗｗ书·１ｋａｎｓｈｕ·ｃｃ", "")
+    strContent = Replace$(strContent, "要看书ｗｗ要ｗ·１ｋａ书ｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "壹看书ｗ?ｗｗ?·１?ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "一看书?ｗ?ｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "要看书ｗ?ｗ?ｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "一看书ｗ?ｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+'    strContent = Replace$(strContent, "一看书ｗ?ｗｗ·１ｋａｎｓｈｕ·ｃｃ", "")
+
+'
+'    strContent = Replace$(strContent, "938小说网www.938xs.com", "")
+'    strContent = Replace$(strContent, "http://www.938xs.com", "")
+'    strContent = Replace$(strContent, "938小说网", "")
+'    strContent = Replace$(strContent, "本书来自", "")
     
      
 
@@ -410,18 +412,20 @@ Private Sub cmdgetmenu_Click()
     'Call fileWrite(App.Path & "/debug.log", "strMenulist" & vbCrLf & vbCrLf & "-------------------------------------" & vbCrLf & strMenulist)
     strMenulist = Replace$(strMenulist, "  ", "")
     strMenulist = Replace$(strMenulist, vbTab, "")
+    strMenulist = Replace$(strMenulist, "<br/>", vbCrLf)
+    
     strMenulist = Replace$(strMenulist, vbCrLf & vbCrLf, vbCrLf)
     strMenulist = Replace$(strMenulist, vbCrLf & " ", vbCrLf)
     
-    'Call fileWrite(App.Path & "/debug.log", "strMenulist" & vbCrLf & vbCrLf & "-------------------------------------" & vbCrLf & strMenulist)
-    'Call fileWrite(App.Path & "/debug.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
+    'Call fileWrite(App.Path & "/debug_strmenu.log", "strMenulist" & vbCrLf & vbCrLf & "-------------------------------------" & vbCrLf & strMenulist)
+'    Call fileWrite(App.Path & "/debug_replaceSPACE.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
     
-    posL = InStr(1, strMenulist, "read")
+    posL = InStr(1, strMenulist, "<div id=""info"">")
     If posL = 0 Then
         Exit Sub
     End If
     
-    posL = InStr(posL, strMenulist, "<h3>")
+    posL = InStr(posL, strMenulist, "<h1>")
     If posL = 0 Then
         Exit Sub
     End If
@@ -441,7 +445,7 @@ Private Sub cmdgetmenu_Click()
     Text2 = "书名:" & BookTitle
     
     
-    'Call fileWrite(App.Path & "/debug_Booktitle.log", "Book Title:" & BookTitle)
+'    Call fileWrite(App.Path & "/debug_Booktitle.log", "Book Title:" & BookTitle)
     '将章节标题作为文件名
     If filename = "" Then
         filename = BookTitle 'tmpstrTitle
@@ -456,25 +460,25 @@ Private Sub cmdgetmenu_Click()
 '    strMenulist = Mid$(strMenulist, posL)
     
     
-    'Call fileWrite(App.Path & "/debug.log", "截取dd后的信息:" & vbCrLf & strMenulist)
+    'Call fileWrite(App.Path & "/debug_cap.log", "截取dd后的信息:" & vbCrLf & strMenulist)
     
-    posL = InStr(1, strMenulist, "<ul")
+    posL = InStr(1, strMenulist, "<dd><a")
     If posL = 0 Then
         Exit Sub
     End If
     
-    posL = InStr(posL, strMenulist, "<a")
-    If posL = 0 Then
-        Exit Sub
-    End If
+'    posL = InStr(posL, strMenulist, "<a")
+'    If posL = 0 Then
+'        Exit Sub
+'    End If
     
     
     
     strMenulist = Mid$(strMenulist, posL)
-    'Call fileWrite(App.Path & "/debug.log", "截取<ul>后的信息:" & vbCrLf & strMenulist)
+'    Call fileWrite(App.Path & "/debug_cap2.log", "截取<ul>后的信息:" & vbCrLf & strMenulist)
     
     
-    posR = InStr(1, strMenulist, "</ul>")
+    posR = InStr(1, strMenulist, "</dl>")
     If posR = 0 Then
         Exit Sub
     End If
@@ -486,14 +490,14 @@ Private Sub cmdgetmenu_Click()
     
 '    strMenulist = Replace$(strMenulist, "<ul>", "")
 '    strMenulist = Replace$(strMenulist, "</ul>", "")
-    strMenulist = Replace$(strMenulist, "<li>", "")
-    strMenulist = Replace$(strMenulist, "</li>", "")
-    strMenulist = Replace$(strMenulist, "<span></span>", "")
-    strMenulist = Replace$(strMenulist, "-" & BookTitle, "")
+    strMenulist = Replace$(strMenulist, "<dd>", "")
+    strMenulist = Replace$(strMenulist, "</dd>", "")
+'    strMenulist = Replace$(strMenulist, "<span></span>", "")
+'    strMenulist = Replace$(strMenulist, "-" & BookTitle, "")
 '    strMenulist = Replace$(strMenulist, vbCr, "")
 '    strMenulist = Replace$(strMenulist, vbLf, "")
     
-    'Call fileWrite(App.Path & "/debug_li.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
+'    Call fileWrite(App.Path & "/debug_dd.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
     
     Dim k
     Dim i, j
