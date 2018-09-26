@@ -755,7 +755,7 @@ For i = 0 To UBound(k)
     Debug.Print "k(" & i & "):" & k(i)
     l = Split(k(i), ",")
     If UBound(l) > 5 Then
-        Text3 = Text3 & l(8) & "," & l(5) & "," & l(4) & vbCrLf
+        Text3 = Text3 & l(5) & "," & l(4) & vbCrLf
     End If
 Next
 End Sub
