@@ -14,3 +14,5 @@
 13=#P0#=mb	#P1#=fileWrite	#P2#=在线小说下载/Form1/fileWrite	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170627120635	#P7#=0	#P8#=1	.
 14=#P0#=mb	#P1#=Timer1_Timer	#P2#=在线小说下载/Form1/Timer1_Timer	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20170627105519	#P7#=0	#P8#=-1	.
 15=#P0#=mb	#P1#=GetNextUrl	#P2#=在线小说下载/Form1/GetNextUrl	#P3#=	#P4#=	#P5#=MembMethodPrivate	#P6#=20170627105508	#P7#=0	#P8#=6	.
+[History]
+1=#P0#=mb	#P1#=Command1_Click	#P2#=信息查询/Form1/Command1_Click	#P3#=	#P4#=	#P5#=MembEventProcPrivate	#P6#=20180928164341	#P7#=0	#P8#=10	.

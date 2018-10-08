@@ -2,105 +2,123 @@ VERSION 5.00
 Begin VB.Form Form1 
    BackColor       =   &H80000005&
    BorderStyle     =   1  'Fixed Single
-   Caption         =   "信息查询"
-   ClientHeight    =   8325
+   Caption         =   "在线小说下载器"
+   ClientHeight    =   3600
    ClientLeft      =   -15
    ClientTop       =   375
-   ClientWidth     =   14850
+   ClientWidth     =   10995
    FillColor       =   &H80000005&
+   Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
-   ScaleHeight     =   8325
-   ScaleWidth      =   14850
+   ScaleHeight     =   3600
+   ScaleWidth      =   10995
    StartUpPosition =   1  '所有者中心
-   Begin VB.TextBox Text3 
+   Begin VB.TextBox txtText3 
       Appearance      =   0  'Flat
-      CausesValidation=   0   'False
-      ForeColor       =   &H80000007&
-      Height          =   2490
-      Left            =   120
-      MultiLine       =   -1  'True
-      TabIndex        =   6
-      Top             =   5640
-      Width           =   14610
-   End
-   Begin VB.CommandButton Command1 
-      Caption         =   "搞一下上面的数据"
-      Height          =   495
-      Left            =   360
-      TabIndex        =   5
-      Top             =   5040
-      Width           =   5175
-   End
-   Begin VB.TextBox Text1 
-      Appearance      =   0  'Flat
-      CausesValidation=   0   'False
-      ForeColor       =   &H80000007&
-      Height          =   2970
-      Left            =   120
-      MultiLine       =   -1  'True
-      TabIndex        =   4
-      Text            =   "Form1.frx":0000
-      Top             =   2040
-      Width           =   14610
+      Height          =   285
+      Left            =   8100
+      TabIndex        =   9
+      Text            =   "1"
+      Top             =   90
+      Width           =   780
    End
    Begin VB.CommandButton cmdgetmenu 
-      Caption         =   "点击查询"
+      Caption         =   "下载"
       Height          =   300
-      Left            =   7920
-      TabIndex        =   3
-      Top             =   315
+      Left            =   9945
+      TabIndex        =   7
+      Top             =   90
       Width           =   990
    End
    Begin VB.TextBox txtHttpWww 
       Appearance      =   0  'Flat
       ForeColor       =   &H80000007&
       Height          =   300
-      Left            =   1470
+      Left            =   1350
       TabIndex        =   0
-      Text            =   "略阳县东信矿业有限责任公司"
-      Top             =   360
+      Text            =   "http://www.biqugecom.com/36/36841/"
+      Top             =   90
       Width           =   6225
+   End
+   Begin VB.Timer Timer1 
+      Enabled         =   0   'False
+      Interval        =   10
+      Left            =   2385
+      Top             =   1260
    End
    Begin VB.TextBox Text2 
       Appearance      =   0  'Flat
       CausesValidation=   0   'False
       ForeColor       =   &H80000007&
-      Height          =   930
-      Left            =   120
+      Height          =   3090
+      Left            =   45
       MultiLine       =   -1  'True
+      ScrollBars      =   2  'Vertical
       TabIndex        =   1
-      Top             =   720
-      Width           =   8850
+      Top             =   450
+      Width           =   10890
    End
-   Begin VB.Label Label2 
-      BackColor       =   &H80000005&
-      Caption         =   "https://www.qichacha.com/search?key="
-      Height          =   255
-      Left            =   240
-      TabIndex        =   8
-      Top             =   0
-      Width           =   7215
+   Begin VB.TextBox Text1 
+      Appearance      =   0  'Flat
+      ForeColor       =   &H80000007&
+      Height          =   300
+      Left            =   1350
+      TabIndex        =   2
+      Text            =   "http://www.vodtw.com/html/book/28/28902/21716386.html"
+      Top             =   630
+      Width           =   6225
    End
-   Begin VB.Label Label1 
+   Begin VB.CheckBox chk 
+      Appearance      =   0  'Flat
       BackColor       =   &H80000005&
-      Caption         =   "再下面粘贴从 http://www.gpsspg.com/latitude-and-longitude.htm 导出的txt文本"
-      Height          =   255
-      Left            =   240
-      TabIndex        =   7
-      Top             =   1800
-      Width           =   7695
+      Caption         =   "自动下载下一章"
+      ForeColor       =   &H80000008&
+      Height          =   285
+      Left            =   8910
+      TabIndex        =   3
+      Top             =   630
+      Value           =   1  'Checked
+      Width           =   1950
+   End
+   Begin VB.CommandButton cmdCommand2 
+      Caption         =   "下载"
+      Height          =   315
+      Left            =   7785
+      TabIndex        =   6
+      Top             =   630
+      Width           =   990
    End
    Begin VB.Label lbl 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "查询企业名称"
+      Caption         =   "从第          章开始"
+      Height          =   180
+      Index           =   1
+      Left            =   7695
+      TabIndex        =   8
+      Top             =   135
+      Width           =   1800
+   End
+   Begin VB.Label lbl 
+      AutoSize        =   -1  'True
+      BackStyle       =   0  'Transparent
+      Caption         =   "书记目录网址："
       Height          =   180
       Index           =   0
-      Left            =   165
-      TabIndex        =   2
-      Top             =   375
-      Width           =   1080
+      Left            =   45
+      TabIndex        =   5
+      Top             =   135
+      Width           =   1260
+   End
+   Begin VB.Label Label1 
+      BackStyle       =   0  'Transparent
+      Caption         =   "当前阅读网址："
+      Height          =   255
+      Left            =   45
+      TabIndex        =   4
+      Top             =   675
+      Width           =   1650
    End
 End
 Attribute VB_Name = "Form1"
@@ -109,15 +127,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
-
 Option Explicit
 
-
-
-Private Declare Function MultiByteToWideChar Lib "kernel32" (ByVal CodePage As Long, ByVal dwFlags As Long, ByRef lpMultiByteStr As Any, ByVal cchMultiByte As Long, ByVal lpWideCharStr As Long, ByVal cchWideChar As Long) As Long
-Private Const CP_UTF8 = 65001
- 
-Dim FileName
+Dim filename
 Dim BookTitle
     
     
@@ -145,7 +157,7 @@ Private Sub cmdCommand2_Click()
     Dim strHTML     As String
     
     '=====================================获取html内容
-'    strHTML = GetHtmlStr(Text1)
+    strHTML = GetHtmlStr(Text1)
     strHTML = LCase$(strHTML)
     '====================================获取章节标题
     tmpstrTitle = GetTitle(strHTML)
@@ -156,8 +168,8 @@ Private Sub cmdCommand2_Click()
     
     tmpstrTitle = Trim$(tmpstrTitle)
     '将章节标题作为文件名
-    If FileName = "" Then
-        FileName = tmpstrTitle
+    If filename = "" Then
+        filename = tmpstrTitle
     End If
     
     '====================================获取章节内容
@@ -173,7 +185,7 @@ Private Sub cmdCommand2_Click()
     
     strCont = tmpstrTitle & vbCrLf & tmpstrCont & vbCrLf & vbCrLf
 
-    Call fileWrite(App.Path & "\" & FileName & ".txt", strCont)
+    Call fileWrite(App.Path & "\" & filename & ".txt", strCont)
     '==================================== 获取下一章对应的rul
     tmpstrCont = GetNextUrl(strHTML)
  
@@ -187,58 +199,35 @@ Private Sub cmdCommand2_Click()
     End If
     
     '==================================== 下一章的网址，填入文本框
-    'Text1.Text = txtHttpWww & tmpstrCont
+    Text1.Text = txtHttpWww & tmpstrCont
 
-'    Text2 = tmpstrTitle & vbTab & vbTab & Text1 & vbCrLf & Text2
+    Text2 = tmpstrTitle & vbTab & vbTab & Text1 & vbCrLf & Text2
 
-'    If chk.Value = vbChecked Then
-'        Timer1.Enabled = True
-'    End If
+    If chk.Value = vbChecked Then
+        Timer1.Enabled = True
+    End If
     
 End Sub
 
 Private Function GetHtmlStr(strUrl As String) As String
-    Dim Vera
-    Dim k() As Byte
     Dim xml As Object
     Set xml = CreateObject("msxml2.serverxmlhttp")
     xml.Open "GET", strUrl, False
-'        xml.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
-    'xml.setRequestHeader "Accept-Language", "zh-cn"
-'        xml.setRequestHeader "Accept-Encoding", "gzip, deflate"
+    '    xml.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+    xml.setRequestHeader "Accept-Language", "zh-cn"
+    '    xml.setRequestHeader "Accept-Encoding", "gzip, deflate"
     xml.setRequestHeader "User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; SV1; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.04506.648; .NET CLR 3.5.21022; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)"
     xml.send
 
     Do While xml.ReadyState <> 4
         DelayMs (100)
     Loop
-     
-'    GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
-'    Call fileWrite(App.Path & "/1-1loadsourcecode.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & GetHtmlStr)
-    
-    GetHtmlStr = UTF8ToGB2312(xml.ResponseBody)
-    'Call fileWrite(App.Path & "/1-2loadsourcecode.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & GetHtmlStr)
- 
+
+    GetHtmlStr = StrConv(xml.ResponseBody, vbUnicode)
+    'GetHtmlStr = xml.responsetext
     Set xml = Nothing
 End Function
 
-Public Function UTF8ToGB2312(ByVal varIn As Variant) As String
-    Dim bytesData() As Byte
-    Dim adoStream As Object
-
-    bytesData = varIn
-    Set adoStream = CreateObject("ADODB.Stream")
-    adoStream.Charset = "utf-8"
-    adoStream.Type = 1 'adTypeBinary
-    adoStream.Open
-    adoStream.Write bytesData
-    adoStream.Position = 0
-    adoStream.Type = 2 'adTypeText
-    UTF8ToGB2312 = adoStream.ReadText()
-    adoStream.Close
-End Function
- 
- 
 Private Function GetTitle(strHTML As String) As String
 
     Dim Pos, Cont, posL, posR
@@ -438,60 +427,6 @@ Function fileWrite(strFilename As String, strContent As String)
     Close #i
 End Function
 
-
-
- Public Function UTF8Encode(ByVal szInput As String) As String
-    Dim wch  As String
-    Dim uch As String
-    Dim szRet As String
-    Dim x As Long
-    Dim inputLen As Long
-    Dim nAsc  As Long
-    Dim nAsc2 As Long
-    Dim nAsc3 As Long
-     
-    If szInput = "" Then
-        UTF8Encode = szInput
-        Exit Function
-    End If
-    inputLen = Len(szInput)
-    For x = 1 To inputLen
-    '得到每个字符
-        wch = Mid(szInput, x, 1)
-        '得到相应的UNICODE编码
-        nAsc = AscW(wch)
-    '对于<0的编码　其需要加上65536
-        If nAsc < 0 Then nAsc = nAsc + 65536
-    '对于<128位的ASCII的编码则无需更改
-        If (nAsc And &HFF80) = 0 Then
-            szRet = szRet & wch
-        Else
-            If (nAsc And &HF000) = 0 Then
-            '真正的第二层编码范围为000080 - 0007FF
-            'Unicode在范围D800-DFFF中不存在任何字符，基本多文种平面中约定了这个范围用于UTF-16扩展标识辅助平面（两个UTF-16表示一个辅助平面字符）.
-            '当然，任何编码都是可以被转换到这个范围，但在unicode中他们并不代表任何合法的值。
-     
-                uch = "%" & Hex(((nAsc \ 2 ^ 6)) Or &HC0) & Hex(nAsc And &H3F Or &H80)
-                szRet = szRet & uch
-                 
-            Else
-            '第三层编码00000800 – 0000FFFF
-            '首先取其前四位与11100000进行或去处得到UTF-8编码的前8位
-            '其次取其前10位与111111进行并运算，这样就能得到其前10中最后6位的真正的编码　再与10000000进行或运算来得到UTF-8编码中间的8位
-            '最后将其与111111进行并运算，这样就能得到其最后6位的真正的编码　再与10000000进行或运算来得到UTF-8编码最后8位编码
-                uch = "%" & Hex((nAsc \ 2 ^ 12) Or &HE0) & "%" & _
-                Hex((nAsc \ 2 ^ 6) And &H3F Or &H80) & "%" & _
-                Hex(nAsc And &H3F Or &H80)
-                szRet = szRet & uch
-            End If
-        End If
-    Next
-     
-    UTF8Encode = szRet
-End Function
-
-
-
 Private Sub cmdgetmenu_Click()
 
     
@@ -500,13 +435,13 @@ Private Sub cmdgetmenu_Click()
     Dim posL, posR
         
     '==================================== 对书籍首页网址进行格式化
-'    If Right$(txtHttpWww, 1) <> "/" Then
-'        txtHttpWww = txtHttpWww & "/"
-'    End If
-    strMenulist = GetHtmlStr("https://www.qichacha.com/search?key=" + UTF8Encode(txtHttpWww))
+    If Right$(txtHttpWww, 1) <> "/" Then
+        txtHttpWww = txtHttpWww & "/"
+    End If
     
-    'strMenulist = Text4
-'    Call fileWrite(App.Path & "/1loadsourcecode.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
+    
+    
+    strMenulist = GetHtmlStr(txtHttpWww)
     strMenulist = LCase$(strMenulist)
     strMenulist = Replace$(strMenulist, "  ", "")
     strMenulist = Replace$(strMenulist, "&nbsp;", "")
@@ -519,192 +454,157 @@ Private Sub cmdgetmenu_Click()
     'Call fileWrite(App.Path & "/debug_strmenu.log", "strMenulist" & vbCrLf & vbCrLf & "-------------------------------------" & vbCrLf & strMenulist)
     'Call fileWrite(App.Path & "/debug_replaceSPACE.log", "去掉""  ""两个空格之后的原始信息:" & vbCrLf & strMenulist)
     
-    posL = InStr(1, strMenulist, "小查为您找到")
+    posL = InStr(1, strMenulist, "<div id=""info"">")
     If posL = 0 Then
         Exit Sub
     End If
     
-    
-    
-    posR = InStr(posL, strMenulist, "点击搜索更多")
+    posL = InStr(posL, strMenulist, "<h1>")
     If posL = 0 Then
         Exit Sub
     End If
     
-    Dim i
-    Dim j
-    Dim k
+    posL = InStr(posL, strMenulist, ">")
+    If posL = 0 Then
+        Exit Sub
+    End If
     
-      
-    '截取企业信息
+    posR = InStr(posL, strMenulist, "<")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
     BookTitle = Mid(strMenulist, posL + 1, posR - posL - 1)
     
-    '过滤全部标签
-    Do
-        i = InStr(1, BookTitle, "<")
-        If i Then
-            j = InStr(i, BookTitle, ">")
-            If j Then
-                BookTitle = Replace(BookTitle, Mid(BookTitle, i, j - i + 1), "")
-                 
-            End If
-             
-        End If
-    Loop While (j <> 0 And i <> 0)
-    
-    '清理无用字符
-    BookTitle = Replace(BookTitle, vbCrLf, "")
-    BookTitle = Replace(BookTitle, vbCr, "")
-    BookTitle = Replace(BookTitle, vbLf, "")
-    BookTitle = Replace(BookTitle, "  ", " ")
+    Text2 = "书名:" & BookTitle
     
     
-    '显示有效数据
-    Text2 = BookTitle
-    
-    posL = InStr(1, BookTitle, "地址：")
-    
-    If (posL) Then
-        posR = InStr(posL, BookTitle, " ")
-        If posR Then
-            BookTitle = Mid(BookTitle, posL, posR - posL + 1)
-        End If
+'    Call fileWrite(App.Path & "/debug_Booktitle.log", "Book Title:" & BookTitle)
+    '将章节标题作为文件名
+    If filename = "" Then
+        filename = BookTitle 'tmpstrTitle
     End If
     
-    BookTitle = Replace(BookTitle, " ", "")
-    Text2 = BookTitle
     
-    Exit Sub
-'
-'    'Call fileWrite(App.Path & "/debug_Booktitle.log", "Book Title:" & BookTitle)
-'    '将章节标题作为文件名
-'    If FileName = "" Then
-'        FileName = BookTitle 'tmpstrTitle
-'    End If
-'
-'
-'
-'    Exit Sub
-'
-'    '截取章节信息
-'
-'
-'    posL = InStr(1, strMenulist, "</dt>")
-'    If posL = 0 Then
-'        Exit Sub
-'    End If
-'
-'    posL = InStr(posL + 1, strMenulist, "</dt>")
-'    If posL = 0 Then
-'        Exit Sub
-'    End If
-'
-'    posL = InStr(posL + 1, strMenulist, "<dd><a")
-'    If posL = 0 Then
-'        Exit Sub
-'    End If
-'
-'
-'
-'    strMenulist = Mid$(strMenulist, posL)
-'    'Call fileWrite(App.Path & "/debug_cap2.log", "截取<dd><a后的信息:" & vbCrLf & strMenulist)
-'
-'
-'    posR = InStr(1, strMenulist, "</dl>")
-'    If posR = 0 Then
-'        Exit Sub
-'    End If
-'
-'
-'
-'    strMenulist = Left(strMenulist, posR - 1)
-'    'Call fileWrite(App.Path & "/debug_ul_eul.log", "截取<ul></ul>之间的信息:" & vbCrLf & strMenulist)
-'
-''    strMenulist = Replace$(strMenulist, "<ul>", "")
-''    strMenulist = Replace$(strMenulist, "</ul>", "")
-'    strMenulist = Replace$(strMenulist, "<dd>", "")
-'    strMenulist = Replace$(strMenulist, "</dd>", "")
-''    strMenulist = Replace$(strMenulist, "<span></span>", "")
-''    strMenulist = Replace$(strMenulist, "-" & BookTitle, "")
-''    strMenulist = Replace$(strMenulist, vbCr, "")
-''    strMenulist = Replace$(strMenulist, vbLf, "")
-'
-'    'Call fileWrite(App.Path & "/debug_dd.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
-'
-'
-'
-'    Dim hostUrl
-'    Dim TotalCap
-'    Dim s As String
-'    k = Split(strMenulist, "</a>")
-'
-''    For i = 0 To TotalCap - 1
-''        For j = i + 1 To TotalCap
-''            If k(i) = k(j) Then
-''                k(j) = ""
-''            End If
-''            DoEvents
-''        Next
-''        DoEvents
-''    Next
-'
-'
-'    TotalCap = UBound(k) - 2
-'
-'    ReDim UT(TotalCap) As UrlandTitle
-'
-'    Text2 = "一共找到 " & TotalCap & " 章" & vbCrLf & Text2
-'
-'    j = Val(txtText3) - 1
-'    If j < 0 Then j = 0
-'
-'    txtText3 = j + 1
-'    hostUrl = Left(txtHttpWww, InStr(10, txtHttpWww, "/") - 1)
-'
-'    For i = j To TotalCap
-'        If Len(k(i)) Then
-'            k(i) = Trim$(k(i))
-'            posL = InStr(1, k(i), """") + 1
-'            If posL <> 0 Then
-'                posR = InStr(posL, k(i), """") - 1
-'                 If posR <> 0 Then
-'                    UT(i).Url = hostUrl & Mid$(k(i), posL, posR - posL + 1)
-'
-'                End If
+    '截取章节信息
+    
+    
+    posL = InStr(1, strMenulist, "</dt>")
+    If posL = 0 Then
+        Exit Sub
+    End If
+
+    posL = InStr(posL + 1, strMenulist, "</dt>")
+    If posL = 0 Then
+        Exit Sub
+    End If
+    
+    posL = InStr(posL + 1, strMenulist, "<dd><a")
+    If posL = 0 Then
+        Exit Sub
+    End If
+     
+    
+    
+    strMenulist = Mid$(strMenulist, posL)
+    'Call fileWrite(App.Path & "/debug_cap2.log", "截取<dd><a后的信息:" & vbCrLf & strMenulist)
+    
+    
+    posR = InStr(1, strMenulist, "</dl>")
+    If posR = 0 Then
+        Exit Sub
+    End If
+    
+    
+    
+    strMenulist = Left(strMenulist, posR - 1)
+    'Call fileWrite(App.Path & "/debug_ul_eul.log", "截取<ul></ul>之间的信息:" & vbCrLf & strMenulist)
+    
+'    strMenulist = Replace$(strMenulist, "<ul>", "")
+'    strMenulist = Replace$(strMenulist, "</ul>", "")
+    strMenulist = Replace$(strMenulist, "<dd>", "")
+    strMenulist = Replace$(strMenulist, "</dd>", "")
+'    strMenulist = Replace$(strMenulist, "<span></span>", "")
+'    strMenulist = Replace$(strMenulist, "-" & BookTitle, "")
+'    strMenulist = Replace$(strMenulist, vbCr, "")
+'    strMenulist = Replace$(strMenulist, vbLf, "")
+    
+    'Call fileWrite(App.Path & "/debug_dd.log", "去掉<ul></ul><li></li>标记的信息:" & vbCrLf & strMenulist)
+    
+    Dim k
+    Dim i, j
+    Dim hostUrl
+    Dim TotalCap
+    Dim s As String
+    k = Split(strMenulist, "</a>")
+    
+'    For i = 0 To TotalCap - 1
+'        For j = i + 1 To TotalCap
+'            If k(i) = k(j) Then
+'                k(j) = ""
 '            End If
-'            If Len(UT(i).Url) Then
-'                posL = InStrRev(k(i), ">") + 1
-'                If posL <> 0 Then
-'                    UT(i).Title = Mid$(k(i), posL)
-'                End If
-'            End If
-'            'Call fileWrite(App.Path & "/debug_Totalcaps.log", "第 " & i & vbTab & " 章:" & UT(i).Title & " - " & UT(i).Url & vbCrLf)
-'
+'            DoEvents
+'        Next
+'        DoEvents
+'    Next
+    
+    
+    TotalCap = UBound(k) - 2
+    
+    ReDim UT(TotalCap) As UrlandTitle
+    
+    Text2 = "一共找到 " & TotalCap & " 章" & vbCrLf & Text2
+    
+    j = Val(txtText3) - 1
+    If j < 0 Then j = 0
+     
+    txtText3 = j + 1
+    hostUrl = Left(txtHttpWww, InStr(10, txtHttpWww, "/") - 1)
+    
+    For i = j To TotalCap
+        If Len(k(i)) Then
+            k(i) = Trim$(k(i))
+            posL = InStr(1, k(i), """") + 1
+            If posL <> 0 Then
+                posR = InStr(posL, k(i), """") - 1
+                 If posR <> 0 Then
+                    UT(i).Url = hostUrl & Mid$(k(i), posL, posR - posL + 1)
+                    
+                End If
+            End If
+            If Len(UT(i).Url) Then
+                posL = InStrRev(k(i), ">") + 1
+                If posL <> 0 Then
+                    UT(i).Title = Mid$(k(i), posL)
+                End If
+            End If
+            'Call fileWrite(App.Path & "/debug_Totalcaps.log", "第 " & i & vbTab & " 章:" & UT(i).Title & " - " & UT(i).Url & vbCrLf)
+            
+        End If
+        DoEvents
+    Next
+    
+    
+    
+
+    
+    
+    For i = j To UBound(UT)
+        DoEvents
+'        If i < 1763 Then
+'            UT(i).Title = "第" & i + 1 & "章 " & UT(i).Title
+'        ElseIf i = 1763 Then
+'            UT(i).Title = "关于更新想说的话"
+'        Else
+'            UT(i).Title = "第" & i & "章 " & UT(i).Title
+            UT(i).Title = UT(i).Title
 '        End If
-'        DoEvents
-'    Next
-'
-'
-'
-'
-'
-'
-'    For i = j To UBound(UT)
-'        DoEvents
-''        If i < 1763 Then
-''            UT(i).Title = "第" & i + 1 & "章 " & UT(i).Title
-''        ElseIf i = 1763 Then
-''            UT(i).Title = "关于更新想说的话"
-''        Else
-''            UT(i).Title = "第" & i & "章 " & UT(i).Title
-'            UT(i).Title = UT(i).Title
-''        End If
-'
-'        Me.Caption = BookTitle & "   " & i & "/" & UBound(k) - 1
-'        Call SaveContent(UT(i))
-'
-'    Next
-'    Text2 = "下载完毕!" & vbCrLf & Text2
+        
+        Me.Caption = BookTitle & "   " & i & "/" & UBound(k) - 1
+        Call SaveContent(UT(i))
+        
+    Next
+    Text2 = "下载完毕!" & vbCrLf & Text2
 End Sub
 
 Private Function SaveContent(UT As UrlandTitle)
@@ -739,38 +639,23 @@ Private Function SaveContent(UT As UrlandTitle)
     
     strCont = tmpstrTitle & vbCrLf & tmpstrCont & vbCrLf & vbCrLf
 
-    Call fileWrite(App.Path & "\" & FileName & ".txt", strCont)
+    Call fileWrite(App.Path & "\" & filename & ".txt", strCont)
  
     Text2 = UT.Url & vbTab & tmpstrTitle & vbCrLf & Text2
     
 End Function
 
 
-Private Sub Command1_Click()
-Dim k
-Dim l
-Dim i
-k = Split(Text1, vbCrLf)
-For i = 0 To UBound(k)
-    Debug.Print "k(" & i & "):" & k(i)
-    l = Split(k(i), ",")
-    If UBound(l) > 5 Then
-        Text3 = Text3 & l(5) & vbTab & l(4) & vbCrLf
-    End If
-Next
-End Sub
-
 Private Sub Form_Load()
-    FileName = ""
+    filename = ""
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
     End
 End Sub
 
-'Private Sub Timer1_Timer()
-'    Timer1.Enabled = False
-'    Call cmdCommand2_Click
-'End Sub
-
+Private Sub Timer1_Timer()
+    Timer1.Enabled = False
+    Call cmdCommand2_Click
+End Sub
 
